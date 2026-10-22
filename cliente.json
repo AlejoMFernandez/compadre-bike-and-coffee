@@ -1,0 +1,492 @@
+{
+  "$schema": "https://raw.githubusercontent.com/AlejoMFernandez/kit-demos/main/docs/cliente.schema.json",
+  "id": "compadre-bike-coffee",
+  "nombre": "Compadre",
+  "pais": "AR",
+  "idioma": "es",
+  "modo": "demo",
+  "whatsapp": "5491125237915",
+  "prefijoPedido": "CMP",
+  "supabase": {
+    "url": "",
+    "anonKey": ""
+  },
+  "marca": {
+    "logo": "img/oso-negro.svg",
+    "logoPanel": "img/oso-blanco.svg",
+    "colores": {
+      "fondo": "#fffff9",
+      "superficie": "#ffffff",
+      "texto": "#020202",
+      "primario": "#020202",
+      "acento": "#ff4900",
+      "borde": "#e3ded2"
+    },
+    "fuentes": {
+      "titulos": "'Antonio', 'Arial Narrow', sans-serif",
+      "texto": "'Instrument Sans', system-ui, sans-serif",
+      "googleFonts": "Antonio:wght@100..700&family=Barlow+Condensed:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&family=Montserrat:wght@800"
+    },
+    "estilo": {
+      "forma": "pildora",
+      "sombra": "suave",
+      "borde": "1.5px",
+      "mayusculas": true
+    }
+  },
+  "modulos": {
+    "carta": true,
+    "carrito": true,
+    "reservas": false,
+    "admin": true
+  },
+  "horarios": {
+    "lun": []
+  },
+  "pedidos": {
+    "salidas": [
+      "whatsapp",
+      "mercadopago"
+    ],
+    "tipos": [
+      "retiro"
+    ],
+    "envio": 0,
+    "minimo": 0
+  },
+  "pagos": {
+    "mercadopago": {
+      "endpoint": "https://kit-demos-amf.vercel.app/api/mp-preference",
+      "modo": "sandbox"
+    }
+  },
+  "carta": {
+    "categorias": [
+      {
+        "id": "cafes",
+        "nombre": "Cafés",
+        "orden": 1
+      },
+      {
+        "id": "panes",
+        "nombre": "Panes",
+        "orden": 2
+      },
+      {
+        "id": "dulce",
+        "nombre": "Mostrador dulce",
+        "orden": 3
+      },
+      {
+        "id": "salado",
+        "nombre": "Mostrador salado",
+        "orden": 4
+      },
+      {
+        "id": "fresca",
+        "nombre": "Fresca",
+        "orden": 5
+      },
+      {
+        "id": "pizzas",
+        "nombre": "Pizzas y fainá",
+        "orden": 6
+      }
+    ],
+    "productos": [
+      {
+        "id": "doppio",
+        "categoria": "cafes",
+        "nombre": "Doppio",
+        "precio": 3600,
+        "foto": "img/platos/doppio.webp"
+      },
+      {
+        "id": "americano",
+        "categoria": "cafes",
+        "nombre": "Americano",
+        "precio": 3900
+      },
+      {
+        "id": "lungo",
+        "categoria": "cafes",
+        "nombre": "Lungo",
+        "precio": 3800
+      },
+      {
+        "id": "cortanito",
+        "categoria": "cafes",
+        "nombre": "Cortanito",
+        "precio": 3600
+      },
+      {
+        "id": "marianito",
+        "categoria": "cafes",
+        "nombre": "Marianito",
+        "precio": 4300
+      },
+      {
+        "id": "cortado-richard",
+        "categoria": "cafes",
+        "nombre": "Cortado Richard",
+        "precio": 3800
+      },
+      {
+        "id": "guidos-magic",
+        "categoria": "cafes",
+        "nombre": "Guido's Magic",
+        "precio": 3900
+      },
+      {
+        "id": "capuccino",
+        "categoria": "cafes",
+        "nombre": "Capuccino",
+        "precio": 4100
+      },
+      {
+        "id": "flat-white",
+        "categoria": "cafes",
+        "nombre": "Flat White",
+        "descripcion": "Doble shot de espresso con leche espumada.",
+        "precio": 4300,
+        "foto": "img/fotos/latte-granito.webp"
+      },
+      {
+        "id": "latte",
+        "categoria": "cafes",
+        "nombre": "Latte",
+        "precio": 4300,
+        "foto": "img/platos/latte-rosetta.webp"
+      },
+      {
+        "id": "latte-doble",
+        "categoria": "cafes",
+        "nombre": "Latte doble",
+        "precio": 4500
+      },
+      {
+        "id": "latte-jordan",
+        "categoria": "cafes",
+        "nombre": "Latte Jordan",
+        "precio": 4900
+      },
+      {
+        "id": "latte-caramel",
+        "categoria": "cafes",
+        "nombre": "Latte caramel",
+        "precio": 5000
+      },
+      {
+        "id": "latte-mocca",
+        "categoria": "cafes",
+        "nombre": "Latte mocca",
+        "precio": 5000
+      },
+      {
+        "id": "long-mac",
+        "categoria": "cafes",
+        "nombre": "Long Mac",
+        "precio": 3900
+      },
+      {
+        "id": "extra-almendra",
+        "categoria": "cafes",
+        "nombre": "Extra leche de almendra",
+        "precio": 300
+      },
+      {
+        "id": "chocolatada",
+        "categoria": "cafes",
+        "nombre": "Chocolatada",
+        "precio": 4000
+      },
+      {
+        "id": "iced-coffee",
+        "categoria": "cafes",
+        "nombre": "Iced coffee",
+        "precio": 5500
+      },
+      {
+        "id": "iced-mocca",
+        "categoria": "cafes",
+        "nombre": "Iced mocca",
+        "precio": 5500
+      },
+      {
+        "id": "naranjeto",
+        "categoria": "cafes",
+        "nombre": "Naranjeto",
+        "precio": 5500
+      },
+      {
+        "id": "buenardo",
+        "categoria": "cafes",
+        "nombre": "Buenardo",
+        "precio": 5000
+      },
+      {
+        "id": "focaccia",
+        "categoria": "panes",
+        "nombre": "Focaccia",
+        "descripcion": "De masa madre.",
+        "precio": 4000
+      },
+      {
+        "id": "campo",
+        "categoria": "panes",
+        "nombre": "Campo",
+        "descripcion": "Hogaza de masa madre.",
+        "precio": 4800,
+        "foto": "img/fotos/hogaza-2.webp"
+      },
+      {
+        "id": "molde-integral",
+        "categoria": "panes",
+        "nombre": "Molde integral",
+        "descripcion": "De masa madre.",
+        "precio": 5800
+      },
+      {
+        "id": "brioche",
+        "categoria": "panes",
+        "nombre": "Brioche",
+        "descripcion": "De masa madre.",
+        "precio": 8000
+      },
+      {
+        "id": "campo-sarraceno",
+        "categoria": "panes",
+        "nombre": "Campo con sarraceno",
+        "descripcion": "Hogaza de masa madre con trigo sarraceno.",
+        "precio": 6500
+      },
+      {
+        "id": "cruasan",
+        "categoria": "dulce",
+        "nombre": "Cruasán",
+        "descripcion": "Masa madre, palote del abuelo Chalo, laminado en manteca y fermentado toda la noche.",
+        "precio": 2800,
+        "foto": "img/platos/cruasan.webp"
+      },
+      {
+        "id": "cruasan-relleno",
+        "categoria": "dulce",
+        "nombre": "Cruasán relleno",
+        "precio": 3900
+      },
+      {
+        "id": "roll-canela",
+        "categoria": "dulce",
+        "nombre": "Roll de canela",
+        "precio": 3800
+      },
+      {
+        "id": "pan-chocolate",
+        "categoria": "dulce",
+        "nombre": "Pan de chocolate",
+        "precio": 3800
+      },
+      {
+        "id": "alfajor",
+        "categoria": "dulce",
+        "nombre": "Alfajor",
+        "precio": 5000
+      },
+      {
+        "id": "rombo",
+        "categoria": "dulce",
+        "nombre": "Rombo",
+        "precio": 4500
+      },
+      {
+        "id": "medialuna",
+        "categoria": "dulce",
+        "nombre": "Medialuna",
+        "precio": 2500
+      },
+      {
+        "id": "danesa",
+        "categoria": "dulce",
+        "nombre": "Danesa",
+        "precio": 4500
+      },
+      {
+        "id": "cookie",
+        "categoria": "dulce",
+        "nombre": "Cookie",
+        "descripcion": "Chips de chocolate amargo, maní tostado, azúcar negra y mascabo.",
+        "precio": 3000,
+        "foto": "img/platos/cookie.webp"
+      },
+      {
+        "id": "torta-ricota",
+        "categoria": "dulce",
+        "nombre": "Torta de ricota",
+        "precio": 7500
+      },
+      {
+        "id": "torta-coco-ddl",
+        "categoria": "dulce",
+        "nombre": "Torta de coco y dulce de leche",
+        "precio": 7500
+      },
+      {
+        "id": "torta-vasca",
+        "categoria": "dulce",
+        "nombre": "Torta vasca",
+        "precio": 8000
+      },
+      {
+        "id": "cruasan-salado",
+        "categoria": "salado",
+        "nombre": "Cruasán jamón y queso o caprese",
+        "descripcion": "La caprese: tomatito, rúcula fresca y muzzarella.",
+        "precio": 7500,
+        "foto": "img/fotos/cruasan-caprese.webp"
+      },
+      {
+        "id": "cones-queso",
+        "categoria": "salado",
+        "nombre": "Cones de queso",
+        "precio": 4000
+      },
+      {
+        "id": "chipa",
+        "categoria": "salado",
+        "nombre": "Chipá",
+        "descripcion": "La receta es de Facu, cliente y amigo de Compadre.",
+        "precio": 3000,
+        "foto": "img/platos/chipa.webp"
+      },
+      {
+        "id": "roll-jyq",
+        "categoria": "salado",
+        "nombre": "Roll de jamón y queso",
+        "precio": 3900
+      },
+      {
+        "id": "birra",
+        "categoria": "fresca",
+        "nombre": "Birra",
+        "precio": 4500,
+        "foto": "img/fotos/birra.webp"
+      },
+      {
+        "id": "vermu",
+        "categoria": "fresca",
+        "nombre": "Vermú",
+        "precio": 5500
+      },
+      {
+        "id": "ferne",
+        "categoria": "fresca",
+        "nombre": "Ferné",
+        "precio": 6000
+      },
+      {
+        "id": "gaseosa",
+        "categoria": "fresca",
+        "nombre": "Gaseosa",
+        "precio": 3500
+      },
+      {
+        "id": "agua-soda",
+        "categoria": "fresca",
+        "nombre": "Agua o soda",
+        "precio": 3000
+      },
+      {
+        "id": "limonada",
+        "categoria": "fresca",
+        "nombre": "Limonada",
+        "precio": 5000
+      },
+      {
+        "id": "naranjada",
+        "categoria": "fresca",
+        "nombre": "Naranjada",
+        "precio": 5000
+      },
+      {
+        "id": "pomelada",
+        "categoria": "fresca",
+        "nombre": "Pomelada",
+        "precio": 5000
+      },
+      {
+        "id": "pizza-marga",
+        "categoria": "pizzas",
+        "nombre": "Marga",
+        "descripcion": "Pizza de masa madre.",
+        "precio": 14000
+      },
+      {
+        "id": "pizza-fuga",
+        "categoria": "pizzas",
+        "nombre": "Fuga",
+        "descripcion": "Pizza de masa madre.",
+        "precio": 15000
+      },
+      {
+        "id": "pizza-napo",
+        "categoria": "pizzas",
+        "nombre": "Napo",
+        "descripcion": "Pizza de masa madre.",
+        "precio": 16000
+      },
+      {
+        "id": "pizza-rucula",
+        "categoria": "pizzas",
+        "nombre": "Rúcula y parme",
+        "descripcion": "Pizza de masa madre.",
+        "precio": 17000
+      },
+      {
+        "id": "pizza-pepe",
+        "categoria": "pizzas",
+        "nombre": "Pepe",
+        "descripcion": "Pizza de masa madre.",
+        "precio": 19000
+      },
+      {
+        "id": "pizza-especial",
+        "categoria": "pizzas",
+        "nombre": "Especial del día",
+        "descripcion": "Preguntá cuál sale hoy.",
+        "precio": 20000
+      },
+      {
+        "id": "faina",
+        "categoria": "pizzas",
+        "nombre": "Fainá",
+        "descripcion": "La receta es del Oso.",
+        "precio": 2500,
+        "foto": "img/platos/faina.webp"
+      },
+      {
+        "id": "fainazzeta",
+        "categoria": "pizzas",
+        "nombre": "Fainazzeta",
+        "precio": 6000
+      }
+    ]
+  },
+  "textos": {
+    "tuPedido": "Tu canasta, compa",
+    "verPedido": "Ver la canasta",
+    "agregar": "Sumar",
+    "agregado": "¡Adentro!",
+    "carritoVacio": "La canasta está vacía.",
+    "carritoVacioSub": "Arrancá por un cortado o una hogaza para el finde.",
+    "retiro": "Retiro por Mosconi 4300",
+    "notaPedido": "¿Algo más que tengamos que saber?",
+    "porWhatsappSub": "Lo pagás cuando lo pasás a buscar",
+    "porMPSub": "Pagás ahora: tarjeta, débito o dinero en cuenta",
+    "enviarPedido": "Enviar encargo",
+    "pedidoListo": "¡Listo, compa!",
+    "pedidoListoSub": "Tu código es {codigo}. Compadre lo ve en su panel y te escribe por WhatsApp.",
+    "waPedido": "Hola Compadre! Quiero encargar:",
+    "waEntrega": "Retiro",
+    "seguir": "Seguir mirando"
+  }
+}
