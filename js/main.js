@@ -1,7 +1,7 @@
 // COMPADRE bike & coffee · demo
 // Intro del oso, "cambiá de bici", vereda de scroll, mazo de hogazas,
 // carta del kit en una sección por vez, "Armá tu mesa" y la película del barrio.
-import { initKit } from '../kit/kit.js?v=1';
+import { initKit } from '../kit/kit.js?v=18';
 
 const html = document.documentElement;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
