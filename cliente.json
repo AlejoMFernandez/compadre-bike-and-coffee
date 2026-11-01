@@ -618,7 +618,7 @@
         "nombre": "Caja Compadre · 6 piezas",
         "precio": 24000,
         "foto": "img/tienda/pepi.webp",
-        "descripcion": "Elegís las 6 piezas del mostrador en «Armá tu caja».",
+        "descripcion": "Elegís las 6 piezas que quieras del mostrador.",
         "disponible": true
       },
       {
@@ -815,8 +815,8 @@
   "textos": {
     "tuPedido": "Tu canasta, compa",
     "verPedido": "Ver la canasta",
-    "agregar": "Sumar",
-    "agregado": "¡Adentro!",
+    "agregar": "Agregar",
+    "agregado": "¡Agregado!",
     "carritoVacio": "La canasta está vacía.",
     "carritoVacioSub": "Arrancá por una torta entera o la bolsa de pan del finde.",
     "retiro": "Retiro por Mosconi 4300",

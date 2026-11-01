@@ -240,36 +240,26 @@ html.listo .sticker:hover { transform: rotate(-8deg) scale(1.05); transition-del
 /* =========================================================
    3 · LA TIENDA (color "de bici"): productos armados para encargar
    ========================================================= */
-.tienda { margin-top: var(--aire); background: var(--pop-bg); color: var(--pop-ink); transition: background-color .6s, color .6s; padding: clamp(80px, 9vw, 140px) var(--pad); }
+.tienda { background: var(--granito-2); padding: clamp(80px, 8vw, 120px) var(--pad); }
 .tienda__in { max-width: var(--ancho); margin: 0 auto; }
-.tienda__cab { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1fr); gap: clamp(48px, 7vw, 110px); align-items: center; }
-.tienda__txt { display: flex; flex-direction: column; min-width: 0; }
-.tienda__txt > p:not(.kicker) { font-size: 18px; line-height: 1.7; max-width: 540px; }
-.mazo { position: relative; aspect-ratio: 1; width: 100%; max-width: 480px; justify-self: center; }
-.mazo__carta {
-  position: absolute; inset: 0; border: 0; padding: 0; background: var(--leche); border-radius: 18px; overflow: hidden; cursor: pointer;
-  box-shadow: 0 0 0 10px var(--leche), 0 26px 40px -16px rgba(0, 0, 0, .45);
-  transform: rotate(calc(var(--k) * 4deg - 4deg)) translate(calc(var(--k) * 10px), calc(var(--k) * -8px));
-  z-index: calc(3 - var(--k)); transition: transform .7s var(--ease);
-}
-.mazo__carta img { width: 100%; height: 100%; object-fit: cover; }
-.mazo__carta.vuela { transform: translate(115%, -10%) rotate(18deg); transition: transform .45s var(--ease-sale); }
-.mazo__hint { position: absolute; left: 50%; bottom: -54px; transform: translateX(-50%); font: 500 14px/1 var(--f-rot); letter-spacing: .18em; text-transform: uppercase; }
-.pasos { list-style: none; margin: 30px 0 22px; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
-.pasos li { display: inline-flex; align-items: center; gap: 10px; padding: 7px 18px 7px 7px; border-radius: 999px; border: 1.5px solid currentColor; font: 600 16px/1 var(--f-rot); letter-spacing: .1em; text-transform: uppercase; }
-.pasos b { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--tinta); color: var(--leche); font: 500 15px/1 var(--f-tit); letter-spacing: 0; }
-.tienda__prox { align-self: flex-start; font-size: 16px; line-height: 1.5; background: var(--leche); color: var(--tinta); border: 1.5px solid var(--tinta); border-radius: 16px; padding: 12px 18px; max-width: 540px; }
-.tienda__prox b { font-weight: 600; }
+.tienda__cab { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px 60px; flex-wrap: wrap; margin-bottom: 30px; }
+.tienda__cab .titulo > span { padding-top: .12em; }
+.tienda__cab .titulo { margin-bottom: 0; font-size: clamp(46px, 5.6vw, 84px); }
+.tienda__bajada { max-width: 440px; font-size: 17px; line-height: 1.6; color: var(--gris); }
+.tienda__info { list-style: none; margin: 0 0 40px; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.tienda__info li { display: flex; align-items: center; gap: 14px; background: var(--leche); border: 1.5px solid var(--linea); border-radius: 16px; padding: 16px 18px; }
+.tienda__info svg { width: 26px; height: 26px; flex: 0 0 auto; fill: none; stroke: var(--naranja); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tienda__info b { display: block; font: 600 17px/1.2 var(--f-rot); letter-spacing: .08em; text-transform: uppercase; }
+.tienda__info small { display: block; font-size: 14px; line-height: 1.4; color: var(--gris); margin-top: 2px; }
+.tienda__info small b { display: inline; font: 600 14px/1.4 var(--f-txt); letter-spacing: 0; text-transform: none; color: var(--tinta); }
 
 /* tabs de la tienda */
-.tienda__kit { margin-top: clamp(70px, 8vw, 110px); }
 .tienda__kit .kit-tabs { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; margin: 0 0 26px; overflow: visible; }
 .tienda__kit .kit-tab {
-  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 20px 0 14px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 10px; min-height: 46px; padding: 0 20px; border-radius: 999px;
   border: 1.5px solid var(--tinta); background: var(--leche); color: var(--tinta);
   font: 600 17px/1 var(--f-rot); letter-spacing: .12em; text-transform: uppercase; transition: background-color .25s, color .25s, transform .25s var(--ease);
 }
-.tienda__kit .kit-tab::before { content: ''; width: 14px; height: 14px; border-radius: 50%; background: var(--tc-bg, #ccc); box-shadow: inset 0 0 0 1.5px var(--tinta); }
 .tienda__kit .kit-tab:hover { transform: translateY(-2px); }
 .tienda__kit .kit-tab.is-on { background: var(--tinta); color: var(--leche); }
 .tienda__kit .kit-tab.kit-tab--especial { border-style: dashed; }
@@ -278,16 +268,16 @@ html.listo .sticker:hover { transform: rotate(-8deg) scale(1.05); transition-del
 /* tarjetas */
 .tienda__kit .kit-carta__panel { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
 .tienda__kit .kit-item.tc {
-  display: flex; flex-direction: column; align-items: stretch; padding: 0; gap: 0; border: 1.5px solid var(--tinta); border-radius: 22px; overflow: hidden;
-  background: var(--leche); color: var(--tinta); min-width: 0; box-shadow: 0 22px 34px -26px rgba(0, 0, 0, .55);
+  display: flex; flex-direction: column; align-items: stretch; padding: 0; gap: 0; border: 1.5px solid var(--linea); border-radius: 20px; overflow: hidden;
+  background: var(--leche); color: var(--tinta); min-width: 0; box-shadow: 0 14px 30px -24px rgba(0, 0, 0, .45);
   transition: transform .35s var(--ease), box-shadow .35s;
 }
 .tienda__kit .kit-item.tc:hover { transform: translateY(-4px); box-shadow: 0 30px 40px -26px rgba(0, 0, 0, .6); }
-.tc__foto { position: relative; margin: 0; width: 100%; aspect-ratio: 4 / 3; background: var(--tc-bg, var(--granito)); overflow: hidden; border-bottom: 1.5px solid var(--tinta); }
+.tc__foto { position: relative; margin: 0; width: 100%; aspect-ratio: 4 / 3; background: var(--granito) url(../img/granito.svg); background-size: 300px; overflow: hidden; }
 .tc__foto img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
 .tc:hover .tc__foto img { transform: scale(1.05); }
 .tc__ph { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 18px; text-align: center; }
-.tc__ph svg { width: 40%; max-width: 130px; color: var(--tinta); --gira: running; --vel: 1.6s; }
+.tc__ph svg { width: 40%; max-width: 130px; color: color-mix(in srgb, var(--tinta) 35%, transparent); --gira: running; --vel: 1.6s; }
 .tc__ventana { position: absolute; left: 12px; top: 12px; right: 12px; width: fit-content; background: var(--tinta); color: var(--leche); font: 600 13px/1.2 var(--f-rot); letter-spacing: .1em; text-transform: uppercase; padding: 7px 12px; border-radius: 999px; }
 .tc__body { padding: 18px 20px 0; flex: 1 1 auto; display: flex; flex-direction: column; }
 .tc__nom { font: 400 23px/1.05 var(--f-tit); letter-spacing: .05em; text-transform: uppercase; }
@@ -304,7 +294,6 @@ html.listo .sticker:hover { transform: rotate(-8deg) scale(1.05); transition-del
 .tc__armar:hover { transform: translateX(3px); }
 .tc__off { font: 600 14px/1 var(--f-rot); letter-spacing: .12em; text-transform: uppercase; color: var(--gris); }
 .tc__en { min-height: 20px; margin: -10px 20px 14px; font: 600 13px/20px var(--f-rot); letter-spacing: .1em; text-transform: uppercase; color: #c23a00; text-align: right; }
-.tienda__pago { margin-top: 36px; font-size: 15px; line-height: 1.6; text-align: center; }
 
 /* =========================================================
    4 · LA CARTA
@@ -478,10 +467,7 @@ html.js .rev-titulo.visto > span:nth-child(2) > span { transition-delay: .1s; }
 html.js .rev-titulo.visto > span:nth-child(3) > span { transition-delay: .2s; }
 html.js .rev-foto img { clip-path: inset(100% 0 0 0); transform: scale(1.12); transition: clip-path 1.2s var(--ease), transform 1.6s var(--ease); }
 html.js .rev-foto.visto img { clip-path: inset(0 0 0 0); transform: none; }
-html.js .mazo.rev .mazo__carta { transform: rotate(0) translateY(40px); }
-html.js .mazo.rev.visto .mazo__carta { transform: rotate(calc(var(--k) * 4deg - 4deg)) translate(calc(var(--k) * 10px), calc(var(--k) * -8px)); transition-delay: calc(var(--k) * 90ms + .2s); }
-html.js .mazo.rev.visto .mazo__carta.vuela { transform: translate(115%, -10%) rotate(18deg); transition-delay: 0s; }
-html.js .bandeja li { opacity: 0; transform: translateY(16px); transition: opacity .5s, transform .6s var(--ease); transition-delay: calc(var(--i, 0) * 70ms + .15s); }
+html.js html.js html.js html.js .bandeja li { opacity: 0; transform: translateY(16px); transition: opacity .5s, transform .6s var(--ease); transition-delay: calc(var(--i, 0) * 70ms + .15s); }
 html.js .visto li { opacity: 1; transform: none; }
 
 /* =========================================================
@@ -517,11 +503,12 @@ html.js .visto li { opacity: 1; transform: none; }
   .barra__nav a::after { display: none; }
   .barra.abierta .barra__nav { opacity: 1; transform: none; pointer-events: auto; }
   .barra.abierta { background: var(--leche); }
-  .esquina, .tienda__cab, .llegar { grid-template-columns: minmax(0, 1fr); }
+  .esquina, .llegar { grid-template-columns: minmax(0, 1fr); }
+  .tienda__info { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .tienda__info li { padding: 12px 16px; }
   .tienda__kit .kit-carta__panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .esquina__foto { max-width: 520px; width: 100%; justify-self: center; }
-  .mazo { max-width: 420px; margin-bottom: 50px; }
-  .carta__grid { grid-template-columns: minmax(0, 1fr); }
+    .carta__grid { grid-template-columns: minmax(0, 1fr); }
   .carta__kit .kit-tabs { grid-row: auto; position: sticky; top: var(--barra-h); z-index: 5; flex-direction: row; flex-wrap: wrap; gap: 6px; padding: 10px 0; margin-bottom: 14px; background: var(--leche); }
   .carta__kit .kit-tab { width: auto; min-height: 44px; padding: 0 14px; font-size: 16px; border: 1.5px solid var(--tinta); border-radius: 999px; }
   .carta__kit .kit-tab:hover { transform: none; }
@@ -558,16 +545,14 @@ html.js .visto li { opacity: 1; transform: none; }
   .hero__ctas .btn { width: 100%; }
   .titulo { margin-bottom: 22px; }
   .dibujo--a { display: none; }
-  .mazo { max-width: 76vw; }
-  .pasos li { font-size: 14px; padding-right: 14px; }
-  .pasos b { width: 26px; height: 26px; }
-  .tienda__prox { font-size: 15px; }
-  .tienda__kit .kit-tabs { gap: 6px; }
-  .tienda__kit .kit-tab { min-height: 42px; padding: 0 14px 0 11px; font-size: 15px; gap: 8px; }
+    .tienda__kit .kit-tabs { flex-wrap: nowrap; overflow-x: auto; margin: 0 0 18px; padding: 2px 0 6px; scrollbar-width: none; position: sticky; top: var(--barra-h); z-index: 5; background: var(--granito-2); }
+  .tienda__kit .kit-tabs::-webkit-scrollbar { display: none; }
+  .tienda__kit .kit-tab { flex: 0 0 auto; }
+  .tienda__kit .kit-tab { min-height: 42px; padding: 0 16px; font-size: 15px; }
   .tienda__kit .kit-carta__panel { grid-template-columns: minmax(0, 1fr); gap: 14px; }
   .tienda__kit .kit-item.tc { display: grid; grid-template-columns: 112px minmax(0, 1fr); grid-template-rows: auto auto auto; border-radius: 18px; }
   .tienda__kit .kit-item.tc:hover { transform: none; }
-  .tc__foto { grid-row: 1 / span 3; aspect-ratio: auto; height: 100%; min-height: 160px; border-bottom: 0; border-right: 1.5px solid var(--tinta); }
+  .tc__foto { grid-row: 1 / span 3; aspect-ratio: auto; height: 100%; min-height: 160px; }
   .tc__ph svg { width: 54%; }
   .tc__ventana { left: 6px; right: 6px; top: 6px; font-size: 11px; padding: 5px 8px; }
   .tc__body { padding: 14px 14px 0; }
@@ -582,7 +567,6 @@ html.js .visto li { opacity: 1; transform: none; }
   .tc__qty { min-width: 0; }
   .tienda__kit .kit-add, .tc__armar { min-height: 40px; padding: 0 13px; font-size: 14px; }
   .tc__en { grid-column: 2; margin: -6px 14px 10px; }
-  .tienda__pago { font-size: 14px; text-align: left; }
   .carta-cab { padding: 22px; gap: 16px; }
   .carta-cab__oso { width: 64px; }
   .carta-items, .carta-items--dos { grid-template-columns: minmax(0, 1fr); padding: 6px 20px; }

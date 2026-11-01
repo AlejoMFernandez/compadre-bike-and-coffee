@@ -182,8 +182,8 @@ const kit = await initKit({
         const ops = (p.opciones || [])[0];
         const pedible = ctx.carrito && ctx.pedible(p);
         const accion = !pedible ? '<span class="tc__off">Hoy no hay</span>'
-          : p.id === 't-caja' ? '<a class="tc__armar" href="#caja">Armala <span aria-hidden="true">→</span></a>'
-          : ops ? `<button type="button" class="kit-add tc__add" data-tc-add="${esc(p.id)}"><span aria-hidden="true">+</span> Sumar</button>`
+          : p.id === 't-caja' ? '<a class="tc__armar" href="#caja">Elegir piezas <span aria-hidden="true">→</span></a>'
+          : ops ? `<button type="button" class="kit-add tc__add" data-tc-add="${esc(p.id)}"><span aria-hidden="true">+</span> Agregar</button>`
           : `<div class="tc__qty" data-kit-qty="${esc(p.id)}"></div>`;
         return `<figure class="tc__foto">${p.foto
             ? `<img src="${esc(ctx.asset(p.foto))}" alt="" width="720" height="720" loading="lazy" decoding="async">`
@@ -254,7 +254,7 @@ function pintarProximo() {
   if (!d || !proximo) return;
   const f = d.franjas.find((x) => x.disponible);
   const hs = (h) => h.replace(/^0/, '');
-  proximo.innerHTML = `Encargando ahora, lo retirás desde el <b>${DIAS_N[new Date(d.fecha + 'T12:00:00').getDay()]} ${dm(d.fecha)}</b> · ${esc(f.nombre.toLowerCase())}, ${hs(f.desde)} a ${hs(f.hasta)} hs.`;
+  proximo.innerHTML = `Si encargás hoy, retirás desde el <b>${DIAS_N[new Date(d.fecha + 'T12:00:00').getDay()]} ${dm(d.fecha)}</b>`;
 }
 pintarProximo();
 setInterval(pintarProximo, 5 * 60 * 1000);
