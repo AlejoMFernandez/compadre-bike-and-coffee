@@ -2,8 +2,8 @@
 // Intro del oso, "cambiá de bici", vereda de scroll, mazo de hogazas,
 // la TIENDA (productos armados para encargar y retirar), "Armá tu caja",
 // la carta del local (solo para mirar) y la película del barrio.
-import { initKit } from '../kit/kit.js?v=19';
-import { opcionesRetiro } from '../kit/core/encargos.js?v=19';
+import { initKit } from '../kit/kit.js?v=20';
+import { opcionesRetiro } from '../kit/core/encargos.js?v=20';
 
 const html = document.documentElement;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;

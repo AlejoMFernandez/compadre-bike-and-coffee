@@ -110,6 +110,9 @@
           "hasta": "20:00"
         }
       ]
+    },
+    "checkout": {
+      "pagina": "encargar/"
     }
   },
   "pagos": {
@@ -827,6 +830,7 @@
     "pedidoListoSub": "Tu código es {codigo}. Compadre lo ve en su panel y te confirma por WhatsApp.",
     "waPedido": "Hola Compadre! Quiero encargar de la tienda:",
     "waEntrega": "Retiro",
-    "seguir": "Seguir mirando"
+    "seguir": "Seguir mirando",
+    "comoPagas": "¿Cómo pagás?"
   }
 }

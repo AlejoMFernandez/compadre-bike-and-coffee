@@ -1,0 +1,48 @@
+/* COMPADRE · página del encargo (checkout del kit 1.17 con la identidad) */
+:root {
+  --tinta: #020202; --leche: #fffff9; --granito: #e7ddcf; --granito-2: #f2eee5; --linea: #e3ded2; --gris: #4a4842; --naranja: #ff4900;
+  --f-tit: 'Antonio', 'Arial Narrow', sans-serif; --f-rot: 'Barlow Condensed', 'Arial Narrow', sans-serif; --f-txt: 'Instrument Sans', system-ui, sans-serif;
+  --pad: clamp(18px, 4.6vw, 64px);
+  --kit-co-top: 100px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--granito-2); -webkit-text-size-adjust: 100%; }
+body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; background: var(--granito-2); color: var(--tinta); font: 400 16px/1.6 var(--f-txt); -webkit-font-smoothing: antialiased; }
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+h1, h2, h3, p { margin: 0; }
+
+.enc-barra { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px var(--pad); background: color-mix(in srgb, var(--leche) 94%, transparent); border-bottom: 1px solid var(--linea); backdrop-filter: blur(8px); }
+.enc-marca { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.enc-marca svg { width: 42px; height: auto; }
+.enc-marca span { font: 200 24px/1 var(--f-tit); letter-spacing: .24em; }
+.enc-volver { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border: 1.5px solid var(--tinta); border-radius: 999px; text-decoration: none; font: 600 15px/1 var(--f-rot); letter-spacing: .12em; text-transform: uppercase; transition: background-color .2s, color .2s; }
+.enc-volver:hover { background: var(--tinta); color: var(--leche); }
+
+.enc { flex: 1 0 auto; width: 100%; max-width: 1240px; margin: 0 auto; padding: clamp(34px, 5vw, 64px) var(--pad) clamp(60px, 7vw, 100px); }
+.enc__cab { margin-bottom: clamp(24px, 3vw, 38px); animation: enc-in .6s cubic-bezier(.2, .8, .2, 1) both; }
+.enc__kicker { font: 600 14px/1.2 var(--f-rot); letter-spacing: .22em; text-transform: uppercase; color: var(--gris); margin-bottom: 10px; }
+.enc__t { font: 200 clamp(48px, 6vw, 84px)/.95 var(--f-tit); letter-spacing: .05em; text-transform: uppercase; padding-top: .08em; }
+@keyframes enc-in { from { opacity: 0; transform: translateY(16px); } }
+
+/* ajustes del kit con la identidad */
+.kit-co__t { font-family: var(--f-tit); font-weight: 400; letter-spacing: .06em; font-size: 1.55rem; }
+.kit-co__n { font-family: var(--f-rot); font-size: 1rem; }
+.kit-co__paso { border-color: var(--linea); }
+.kit-co__retiro { background: color-mix(in srgb, var(--naranja) 12%, var(--leche)); }
+.kit-co__retiro svg { color: var(--naranja); }
+.kit-btn--big { font-family: var(--f-rot); font-weight: 600; letter-spacing: .12em; border-radius: 999px; }
+.kit-dia, .kit-franja { font-family: var(--f-txt); }
+
+.enc-pie { padding: 28px var(--pad) 36px; background: var(--tinta); color: var(--leche); font-size: 14px; display: flex; justify-content: space-between; gap: 10px 30px; flex-wrap: wrap; }
+.enc-pie .credito { color: color-mix(in srgb, var(--leche) 70%, transparent); }
+.enc-pie a { color: var(--leche); text-underline-offset: 3px; }
+.enc-pie a:hover { color: var(--naranja); }
+
+@media (max-width: 640px) {
+  .enc-marca svg { width: 36px; }
+  .enc-marca span { font-size: 19px; letter-spacing: .2em; }
+  .enc-volver { padding: 0 14px; font-size: 13px; }
+  .kit-co__t { font-size: 1.35rem; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
