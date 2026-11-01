@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Compadre bike &amp; coffee · Masa madre y café de especialidad en Villa Devoto</title>
-<meta name="description" content="Pan de masa madre, café de especialidad, pizza, birra y fainá en Av. Mosconi 4300, Villa Devoto. Mirá la carta y encargá el pan del finde.">
+<meta name="description" content="Pan de masa madre, pastelería y café de especialidad en Av. Mosconi 4300, Villa Devoto. Encargá en la tienda online la torta entera, la docena de cruasanes o la bolsa de pan del finde y retirala en el local.">
 <meta name="theme-color" content="#e7ddcf">
 <meta property="og:title" content="Compadre bike &amp; coffee">
-<meta property="og:description" content="Masa madre, café de especialidad y pizza con fainá en Villa Devoto.">
-<meta property="og:image" content="https://compadre-bike-and-coffee.vercel.app/img/og.jpg">
+<meta property="og:description" content="La tienda de Compadre: encargá hoy, retirá mañana por Mosconi 4300.">
+<meta property="og:image" content="https://compadre-bike-and-coffee.vercel.app/img/og.jpg?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:url" content="https://compadre-bike-and-coffee.vercel.app/">
@@ -19,8 +19,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Antonio:wght@100..700&family=Barlow+Condensed:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&family=Montserrat:wght@800&display=swap">
 <link rel="preload" as="image" href="img/platos/pepi.webp">
-<link rel="stylesheet" href="kit/kit.css?v=18">
-<link rel="stylesheet" href="css/estilos.css?v=1">
+<link rel="stylesheet" href="kit/kit.css?v=19">
+<link rel="stylesheet" href="css/estilos.css?v=2">
 <script>
   (function () {
     var d = document.documentElement; d.classList.add('js');
@@ -43,7 +43,7 @@
   <div class="vereda__oso"><svg viewBox="0 0 303.8 307.8"><use href="#oso"></use></svg><span class="vapor"></span></div>
 </div>
 
-<a class="saltar" href="#carta">Saltar a la carta</a>
+<a class="saltar" href="#tienda">Saltar a la tienda</a>
 
 <header class="barra">
   <div class="barra__in">
@@ -54,14 +54,14 @@
       <a class="barra__logo" href="#inicio" aria-label="Compadre bike &amp; coffee, inicio">COMPADRE</a>
     </div>
     <nav class="barra__nav" id="menu" aria-label="Secciones">
-      <a href="#pan">Pan del finde</a>
+      <a href="#tienda">Tienda</a>
+      <a href="#caja">Armá tu caja</a>
       <a href="#carta">Carta</a>
-      <a href="#mesa">Armá tu mesa</a>
       <a href="#compadres">Compadres</a>
       <a href="#llegar">Cómo llegar</a>
     </nav>
     <div class="barra__acc">
-      <a class="btn btn--naranja btn--chico" href="#pan">Encargá pan</a>
+      <a class="btn btn--naranja btn--chico" href="#tienda">Encargá</a>
       <button type="button" class="canasta-btn" data-kit-open="carrito" aria-label="Ver la canasta">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h16l-1.6 10.4a2 2 0 0 1-2 1.6H7.6a2 2 0 0 1-2-1.6Z"/><path d="M8.5 9 12 3.5 15.5 9"/></svg>
         <span class="canasta-btn__n" data-canasta-n hidden>0</span>
@@ -95,10 +95,10 @@
         <span class="hero__compadre" aria-hidden="true"><span>C</span><span>O</span><span>M</span><span>P</span><span>A</span><span>D</span><span>R</span><span>E</span></span>
         <span class="hero__bike" aria-hidden="true">BIKE &amp; COFFEE</span>
       </h1>
-      <p class="hero__p" style="--d:3">Pan de masa madre, café de especialidad y pizza con fainá. Así se ve la mesa desde arriba: armá la tuya.</p>
+      <p class="hero__p" style="--d:3">Pan de masa madre, pastelería y café de especialidad. Ahora también para llevar: encargá hoy en la tienda y retirá mañana por Mosconi.</p>
       <div class="hero__ctas" style="--d:4">
-        <a class="btn" href="#mesa">Armá tu mesa</a>
-        <a class="btn btn--naranja" href="#pan">Encargá el pan del finde</a>
+        <a class="btn btn--naranja" href="#tienda">Entrá a la tienda</a>
+        <a class="btn" href="#caja">Armá tu caja</a>
       </div>
       <ul class="hero__chips" style="--d:5">
         <li>Lunes cerrado</li>
@@ -131,31 +131,30 @@
     <img class="dibujo dibujo--a rev" src="img/dibujo-oler-cafe-negro.svg" alt="" width="531" height="922" loading="lazy" aria-hidden="true">
   </section>
 
-  <!-- 3 · EL PAN DEL FINDE -->
-  <section class="pan" id="pan" aria-labelledby="pan-t">
-    <div class="pan__in">
-      <div class="mazo rev" aria-label="Hogazas de masa madre: tocá para pasar la foto" role="group">
-        <button type="button" class="mazo__carta" style="--k:2"><img src="img/fotos/hogaza-3.webp" alt="Hogaza de masa madre recién salida, en la mano" width="1400" height="1400" loading="lazy" decoding="async"></button>
-        <button type="button" class="mazo__carta" style="--k:1"><img src="img/fotos/hogaza-1.webp" alt="Hogaza de campo con su greña" width="1400" height="1400" loading="lazy" decoding="async"></button>
-        <button type="button" class="mazo__carta" style="--k:0"><img src="img/fotos/hogaza-2.webp" alt="Hogaza de masa madre sostenida en la vereda" width="1400" height="1400" loading="lazy" decoding="async"></button>
-        <p class="mazo__hint">Tocá la foto</p>
-      </div>
-      <div class="pan__txt">
-        <p class="kicker rev">Encargos para retirar</p>
-        <h2 id="pan-t" class="titulo titulo--xl rev-titulo"><span><span>El pan</span></span><span><span>del finde</span></span></h2>
-        <p class="rev">Masa madre, fermentación lenta y el palote del abuelo Chalo. Elegí el día, sumá tus panes y pasalos a buscar por Mosconi.</p>
-        <fieldset class="dias rev">
-          <legend>¿Qué día lo pasás a buscar?</legend>
-          <label><input type="radio" name="dia-pan" value="viernes" checked><span>Viernes</span></label>
-          <label><input type="radio" name="dia-pan" value="sábado"><span>Sábado</span></label>
-          <label><input type="radio" name="dia-pan" value="domingo"><span>Domingo</span></label>
-        </fieldset>
-        <ul class="panes rev" data-panes></ul>
-        <div class="pan__pie rev">
-          <button type="button" class="btn btn--leche" data-kit-open="carrito">Ver la canasta</button>
-          <p class="nota">Días de horneado: supuesto de la demo, a confirmar con Compadre.</p>
+  <!-- 3 · LA TIENDA: productos armados para encargar y retirar -->
+  <section class="tienda" id="tienda" aria-labelledby="tienda-t">
+    <div class="tienda__in">
+      <div class="tienda__cab">
+        <div class="mazo rev" aria-label="Hogazas de masa madre: tocá para pasar la foto" role="group">
+          <button type="button" class="mazo__carta" style="--k:2"><img src="img/fotos/hogaza-3.webp" alt="Hogaza de masa madre recién salida, en la mano" width="1400" height="1400" loading="lazy" decoding="async"></button>
+          <button type="button" class="mazo__carta" style="--k:1"><img src="img/fotos/hogaza-1.webp" alt="Hogaza de campo con su greña" width="1400" height="1400" loading="lazy" decoding="async"></button>
+          <button type="button" class="mazo__carta" style="--k:0"><img src="img/fotos/hogaza-2.webp" alt="Hogaza de masa madre sostenida en la vereda" width="1400" height="1400" loading="lazy" decoding="async"></button>
+          <p class="mazo__hint">Tocá la foto</p>
+        </div>
+        <div class="tienda__txt">
+          <p class="kicker rev">Encargá hoy, retirá mañana</p>
+          <h2 id="tienda-t" class="titulo titulo--xl rev-titulo"><span><span>La tienda</span></span><span><span>de Compadre</span></span></h2>
+          <p class="rev">Lo del mostrador, armado para llevar: la torta entera, la docena de cruasanes, la caja de chipá, la bolsa de pan del finde. Lo encargás con un día de anticipación y lo pasás a buscar por Mosconi 4300.</p>
+          <ol class="pasos rev">
+            <li><b>1</b><span>Elegí</span></li>
+            <li><b>2</b><span>Día y franja de retiro</span></li>
+            <li><b>3</b><span>Pasás por Mosconi</span></li>
+          </ol>
+          <p class="tienda__prox rev" data-proximo>Encargando ahora, lo retirás desde <b>mañana</b>.</p>
         </div>
       </div>
+      <div class="tienda__kit" id="tienda-kit" data-kit="carta" data-kit-tienda="true"></div>
+      <p class="tienda__pago rev">Pagás online con Mercado Pago o en efectivo cuando lo retirás. No hacemos envíos: todo se retira en el local.</p>
     </div>
   </section>
 
@@ -163,13 +162,13 @@
   <section class="carta" id="carta" aria-labelledby="carta-t">
     <div class="carta__cab">
       <div>
-        <p class="kicker rev">Cafés con nombre propio, mostrador y pizzas</p>
-        <h2 id="carta-t" class="titulo titulo--xl rev-titulo"><span><span>La carta</span></span></h2>
+        <p class="kicker rev">Para mirar antes de venir</p>
+        <h2 id="carta-t" class="titulo titulo--xl rev-titulo"><span><span>La carta</span></span><span><span>del local</span></span></h2>
       </div>
-      <p class="carta__aviso rev">Precios de referencia de agosto de 2025. Todo se puede encargar para retirar.</p>
+      <p class="carta__aviso rev">Lo que hay en el mostrador y la barra, siempre al día. Es la misma carta que abre el QR de las mesas. Para llevar algo armado, <a href="#tienda">pasá por la tienda</a>.</p>
     </div>
     <div class="carta__grid">
-      <div class="carta__kit" data-kit="carta"></div>
+      <div class="carta__kit" id="carta-kit" data-kit="carta" data-kit-pedir="false"></div>
       <aside class="carta__foto" aria-hidden="true">
         <div class="carta__foto-caja"><img src="img/platos/latte-rosetta.webp" alt="" width="830" height="830" loading="lazy" decoding="async" data-foto-img></div>
         <p class="carta__foto-nom" data-foto-nom>Latte</p>
@@ -178,23 +177,26 @@
     </div>
   </section>
 
-  <!-- 5 · ARMÁ TU MESA -->
-  <section class="mesa" id="mesa" aria-labelledby="mesa-t">
-    <div class="mesa__cab">
-      <p class="kicker rev">Vista desde arriba</p>
-      <h2 id="mesa-t" class="titulo titulo--xl rev-titulo"><span><span>Armá tu mesa</span></span></h2>
-      <p class="rev">Arrastrá un plato a la mesa (o tocalo) y queda en tu canasta. Tocá un plato servido para sacarlo.</p>
+  <!-- 5 · ARMÁ TU CAJA: la selección de pastelería -->
+  <section class="caja" id="caja" aria-labelledby="caja-t">
+    <div class="caja__cab">
+      <p class="kicker rev">Selección de pastelería</p>
+      <h2 id="caja-t" class="titulo titulo--xl rev-titulo"><span><span>Armá tu caja</span></span></h2>
+      <p class="rev">Seis piezas del mostrador, las que vos quieras. Arrastralas a la caja (o tocalas) y cuando esté llena, la cerramos y va a tu canasta.</p>
     </div>
-    <div class="mesa__grid">
-      <ul class="bandeja rev" data-bandeja aria-label="Platos para servir"></ul>
-      <div class="mesa__tabla rev" data-mesa>
-        <div class="mesa__vacia" data-mesa-vacia>
-          <svg viewBox="0 0 303.8 307.8" aria-hidden="true"><use href="#oso"></use></svg>
-          <p>La mesa está libre, compa.</p>
+    <div class="caja__grid">
+      <ul class="bandeja rev" data-bandeja aria-label="Piezas de pastelería"></ul>
+      <div class="caja__mesa rev" data-caja-mesa>
+        <div class="caja__carton" data-caja>
+          <ol class="caja__huecos" data-huecos aria-label="Lugares de la caja"></ol>
+          <div class="caja__tapa" aria-hidden="true">
+            <svg viewBox="0 0 303.8 307.8"><use href="#oso"></use></svg>
+            <span>COMPADRE</span><small>BIKE &amp; COFFEE</small>
+          </div>
         </div>
-        <div class="mesa__pie">
-          <p class="mesa__cuenta" data-mesa-cuenta aria-live="polite">0 platos</p>
-          <button type="button" class="btn" data-kit-open="carrito">Pedí la cuenta</button>
+        <div class="caja__pie">
+          <p class="caja__cuenta" data-caja-cuenta aria-live="polite">0 de 6 piezas</p>
+          <button type="button" class="btn btn--naranja" data-caja-sumar disabled>Sumar la caja</button>
         </div>
       </div>
     </div>
@@ -225,26 +227,16 @@
 
   <!-- 7 · CÓMO LLEGAR -->
   <section class="llegar" id="llegar" aria-labelledby="llegar-t">
-    <div class="mapa rev" aria-hidden="true">
-      <svg viewBox="0 0 600 440" class="mapa__svg">
-        <rect width="600" height="440" fill="#f2eee5"></rect>
-        <g stroke="#d9cfbf" stroke-width="10" fill="none">
-          <path d="M-20 80 L620 120"></path><path d="M-20 330 L620 360"></path>
-          <path d="M120 -20 L90 460"></path><path d="M300 -20 L280 460"></path><path d="M480 -20 L470 460"></path>
-        </g>
-        <path class="mapa__mosconi" d="M-20 230 L620 205" stroke="#020202" stroke-width="22" fill="none"></path>
-        <path class="mapa__ruta" d="M40 400 C 120 330, 180 300, 250 260 S 330 225, 352 214" stroke="#ff4900" stroke-width="4" stroke-dasharray="10 9" fill="none"></path>
-        <text x="40" y="196" font-family="Barlow Condensed, sans-serif" font-size="22" letter-spacing="3" fill="#020202">AV. MOSCONI</text>
-      </svg>
-      <div class="mapa__pin"><svg viewBox="0 0 303.8 307.8"><use href="#oso"></use></svg><span>4300</span></div>
+    <div class="mapa rev">
+      <iframe title="Mapa: Compadre bike &amp; coffee, Av. Mosconi 4300, Villa Devoto" src="https://www.google.com/maps?q=Compadre%20bike%20%26%20coffee%2C%20Av.%20Mosconi%204300%2C%20Villa%20Devoto%2C%20CABA&amp;z=16&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
     </div>
     <div class="llegar__txt">
       <p class="kicker rev">Cómo llegar</p>
       <h2 id="llegar-t" class="titulo rev-titulo"><span><span>Av. Mosconi 4300</span></span><span><span>Villa Devoto</span></span></h2>
       <dl class="datos rev">
-        <div><dt>Horarios</dt><dd><span class="ph">[HORARIOS]</span> de martes a domingo · lunes cerrado</dd></div>
+        <div><dt>Horarios</dt><dd>Martes a domingo de <span class="ph">8:00 a 20:00 hs</span> · lunes cerrado</dd></div>
         <div><dt>En Google</dt><dd>4,5 con 991 reseñas</dd></div>
-        <div><dt>Encargos</dt><dd>Por la web, para retirar en el local</dd></div>
+        <div><dt>Tienda</dt><dd>Encargos con un día de anticipación, para retirar en el local. Sin envíos.</dd></div>
       </dl>
       <div class="llegar__ctas rev">
         <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Compadre%20bike%20%26%20coffee%20Av.%20Mosconi%204300%20Villa%20Devoto" target="_blank" rel="noopener">Abrir en Google Maps</a>
@@ -259,15 +251,15 @@
     <p class="pie__marca" aria-hidden="true">COMPADRE</p>
     <p class="pie__bike">BIKE &amp; COFFEE</p>
     <div class="pie__fila">
-      <p>Pan de masa madre · Café de especialidad · Pizza, birra y fainá</p>
+      <p>Pan de masa madre · Pastelería · Café de especialidad · Pizza, birra y fainá</p>
       <p>Av. Mosconi 4300, Villa Devoto · Lunes cerrado</p>
-      <p><a href="https://www.instagram.com/compadre.bikeandcoffee/" target="_blank" rel="noopener">Instagram</a> · <a href="admin/" target="_blank" rel="noopener">Panel del dueño</a></p>
+      <p><a href="#tienda">Tienda</a> · <a href="carta/">Carta del QR</a> · <a href="https://www.instagram.com/compadre.bikeandcoffee/" target="_blank" rel="noopener">Instagram</a> · <a href="admin/" target="_blank" rel="noopener">Panel del dueño</a></p>
     </div>
     <div class="pie__estacion" aria-hidden="true"><svg viewBox="0 0 303.8 307.8"><use href="#oso"></use></svg></div>
     <p class="credito">Sitio desarrollado por <a href="https://alejomfernandez.com.ar" target="_blank" rel="noopener">Alejo Martín Fernández</a></p>
   </div>
 </footer>
 
-<script type="module" src="js/main.js?v=1"></script>
+<script type="module" src="js/main.js?v=2"></script>
 </body>
 </html>

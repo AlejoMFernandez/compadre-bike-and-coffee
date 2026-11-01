@@ -1,7 +1,9 @@
 // COMPADRE bike & coffee · demo
 // Intro del oso, "cambiá de bici", vereda de scroll, mazo de hogazas,
-// carta del kit en una sección por vez, "Armá tu mesa" y la película del barrio.
-import { initKit } from '../kit/kit.js?v=18';
+// la TIENDA (productos armados para encargar y retirar), "Armá tu caja",
+// la carta del local (solo para mirar) y la película del barrio.
+import { initKit } from '../kit/kit.js?v=19';
+import { opcionesRetiro } from '../kit/core/encargos.js?v=19';
 
 const html = document.documentElement;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -162,22 +164,54 @@ addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(medirPelicu
 addEventListener('load', medirPelicula);
 
 /* =========================================================
-   KIT: carta, canasta y panel
+   KIT: tienda, carta del local, canasta y panel
    ========================================================= */
+// fechas especiales (Navidad…): la ventana de retiro va sobre la foto
+const VENTANA = {};
+const DIAS_N = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+const dm = (f) => { const [, m, d] = f.split('-').map(Number); return `${d}/${m}`; };
+const plataTxt = (ctx, p) => ctx.money(p.precio) ?? 'A confirmar';
 const kit = await initKit({
   config: 'cliente.json',
-  carta: {
-    itemClass: 'it',
-    template: (p, ctx) => {
-      const precio = ctx.money(p.precio);
-      const pedible = ctx.carrito && p.disponible !== false && p.precio != null;
-      return `<div class="it__txt">
+  imagenes: { lqip: 'img/lqip.json' },
+  cartas: {
+    // la TIENDA: tarjetas con foto, opciones (relleno, molienda…) y "Sumar"
+    'tienda-kit': {
+      itemClass: 'tc',
+      template: (p, ctx) => {
+        const ops = (p.opciones || [])[0];
+        const pedible = ctx.carrito && ctx.pedible(p);
+        const accion = !pedible ? '<span class="tc__off">Hoy no hay</span>'
+          : p.id === 't-caja' ? '<a class="tc__armar" href="#caja">Armala <span aria-hidden="true">→</span></a>'
+          : ops ? `<button type="button" class="kit-add tc__add" data-tc-add="${esc(p.id)}"><span aria-hidden="true">+</span> Sumar</button>`
+          : `<div class="tc__qty" data-kit-qty="${esc(p.id)}"></div>`;
+        return `<figure class="tc__foto">${p.foto
+            ? `<img src="${esc(ctx.asset(p.foto))}" alt="" width="720" height="720" loading="lazy" decoding="async">`
+            : `<div class="tc__ph">${OSO}</div>`}
+            ${VENTANA[p.categoria] ? `<figcaption class="tc__ventana">${esc(VENTANA[p.categoria])}</figcaption>` : ''}</figure>
+          <div class="tc__body">
+            <h3 class="tc__nom">${esc(p.nombre)}</h3>
+            ${p.descripcion ? `<p class="tc__desc">${esc(p.descripcion)}</p>` : ''}
+            ${ops ? `<div class="tc__ops" role="radiogroup" aria-label="${esc(ops.nombre)}" data-op-grupo="${esc(ops.id)}">${ops.valores.map((v, k) => `<button type="button" role="radio" aria-checked="${k === 0}" data-op-val="${esc(v.id)}">${esc(v.nombre)}</button>`).join('')}</div>` : ''}
+          </div>
+          <div class="tc__pie">
+            <span class="tc__precio${p.precio == null ? ' is-na' : ''}">${esc(plataTxt(ctx, p))}</span>
+            ${accion}
+          </div>
+          ${ops && pedible ? `<p class="tc__en" data-tc-n="${esc(p.id)}" aria-live="polite"></p>` : ''}`;
+      },
+    },
+    // la CARTA del local: vidriera, sin botón de pedir
+    'carta-kit': {
+      itemClass: 'it',
+      pedir: false,
+      template: (p, ctx) => `<div class="it__txt">
           <h3 class="it__nom">${p.foto ? '<span class="it__dot" aria-hidden="true"></span>' : ''}${esc(p.nombre)}</h3>
           ${p.descripcion ? `<p class="it__desc">${esc(p.descripcion)}</p>` : ''}
-          ${p.disponible === false ? '<p class="it__desc"><b>Sin stock hoy</b></p>' : ''}
+          ${p.disponible === false ? '<p class="it__desc"><b>Hoy no hay</b></p>' : ''}
         </div>
-        <div class="it__lado"><span class="it__precio">${precio ?? 'Consultar'}</span>${pedible ? `<div data-kit-qty="${esc(p.id)}"></div>` : ''}</div>
-        ${p.foto ? `<img class="it__thumb" src="${esc(ctx.asset(p.foto))}" alt="" loading="lazy" decoding="async">` : ''}`;
+        <div class="it__lado"><span class="it__precio">${ctx.money(p.precio) ?? 'Consultar'}</span></div>
+        ${p.foto ? `<img class="it__thumb" src="${esc(ctx.asset(p.foto))}" alt="" loading="lazy" decoding="async">` : ''}`,
     },
   },
   carrito: {
@@ -195,14 +229,74 @@ function contar(bump) {
   nBarra.textContent = n; nBarra.hidden = n === 0;
   if (bump) { btnCanasta.classList.remove('bump'); void btnCanasta.offsetWidth; btnCanasta.classList.add('bump'); }
 }
-document.addEventListener('kit:carrito', (e) => contar(e.detail.delta > 0));
-kit.carrito?.listo.then(() => contar());
+document.addEventListener('kit:carrito', (e) => { contar(e.detail.delta > 0); contarOpciones(); });
+kit.carrito?.listo.then(() => { contar(); contarOpciones(); });
 
-/* ---------- La carta: una sección por vez, con su color ---------- */
+/* =========================================================
+   LA TIENDA
+   ========================================================= */
+async function leerVentanas() {
+  const antes = JSON.stringify(VENTANA);
+  for (const k of Object.keys(VENTANA)) delete VENTANA[k];
+  for (const c of await kit.store.getCategorias()) {
+    if (c.especial && c.desde && c.hasta) VENTANA[c.id] = `Para retirar del ${dm(c.desde)} al ${dm(c.hasta)}`;
+  }
+  if (JSON.stringify(VENTANA) !== antes) kit.cartas?.find((c) => c.el.id === 'tienda-kit')?.recargar();
+}
+leerVentanas();
+kit.store.onChange(leerVentanas);
+
+// "Encargando ahora, lo retirás desde el …"
+const proximo = $('[data-proximo]');
+function pintarProximo() {
+  const { dias } = opcionesRetiro({ horarios: kit.config.horarios, encargo: kit.config.pedidos?.encargo, tz: kit.tz });
+  const d = dias.find((x) => x.franjas.some((f) => f.disponible));
+  if (!d || !proximo) return;
+  const f = d.franjas.find((x) => x.disponible);
+  const hs = (h) => h.replace(/^0/, '');
+  proximo.innerHTML = `Encargando ahora, lo retirás desde el <b>${DIAS_N[new Date(d.fecha + 'T12:00:00').getDay()]} ${dm(d.fecha)}</b> · ${esc(f.nombre.toLowerCase())}, ${hs(f.desde)} a ${hs(f.hasta)} hs.`;
+}
+pintarProximo();
+setInterval(pintarProximo, 5 * 60 * 1000);
+
+// colores de bici por sección de la tienda
+const COLORES_TIENDA = ['#efea38', '#e0b2f5', '#01d25a', '#03fdd8', '#fd5701', '#0120c9'];
+function armarTienda(el) {
+  $$('.kit-carta__panel', el).forEach((panel, i) => {
+    panel.style.setProperty('--tc-bg', COLORES_TIENDA[i % COLORES_TIENDA.length]);
+  });
+  $$('.kit-tab', el).forEach((t, i) => t.style.setProperty('--tc-bg', COLORES_TIENDA[i % COLORES_TIENDA.length]));
+  contarOpciones();
+}
+const tiendaKit = $('#tienda-kit');
+// opciones (relleno, molienda, con o sin frutas) y "Sumar"
+tiendaKit?.addEventListener('click', (e) => {
+  const op = e.target.closest('[data-op-val]');
+  if (op) {
+    $$('[data-op-val]', op.parentElement).forEach((b) => b.setAttribute('aria-checked', String(b === op)));
+    return;
+  }
+  const add = e.target.closest('[data-tc-add]');
+  if (add) {
+    const it = add.closest('.kit-item');
+    const opc = {};
+    $$('[data-op-grupo]', it).forEach((g) => { const v = $('[aria-checked="true"]', g); if (v) opc[g.dataset.opGrupo] = v.dataset.opVal; });
+    kit.carrito.agregar(add.dataset.tcAdd, 1, { opc, origen: add });
+  }
+});
+// "2 en la canasta" debajo de los productos con opciones (lugar reservado: no mueve nada)
+function contarOpciones() {
+  $$('[data-tc-n]').forEach((el) => {
+    const n = (kit.carrito?.lineas || []).filter((l) => l.id === el.dataset.tcN).reduce((s, l) => s + l.cant, 0);
+    el.textContent = n ? `${n} en la canasta` : '';
+  });
+}
+
+/* ---------- La carta del local: una sección por vez, con su color ---------- */
 const DOS_COLUMNAS = new Set(['cafes', 'fresca']);
 const SUB = {
   cafes: 'Cafés de especialidad con nombre propio',
-  panes: 'Masa madre · se encargan para retirar',
+  panes: 'Masa madre de todos los días',
   dulce: 'Pastelería de masa madre',
   salado: 'Para el mediodía o la merienda',
   fresca: 'Birra, vermú y limonadas',
@@ -220,7 +314,7 @@ function armarCarta(el) {
     const nombre = tabs[i]?.textContent.trim() || '';
     const cab = document.createElement('div');
     cab.className = 'carta-cab';
-    cab.innerHTML = `<div class="carta-cab__oso">${OSO}</div><div><h3 class="carta-cab__t">${esc(nombre)}</h3><p class="carta-cab__sub">${items.length} opciones · ${esc(SUB[cat] || 'Todo se puede encargar')}</p></div>`;
+    cab.innerHTML = `<div class="carta-cab__oso">${OSO}</div><div><h3 class="carta-cab__t">${esc(nombre)}</h3><p class="carta-cab__sub">${items.length} opciones · ${esc(SUB[cat] || 'En el mostrador')}</p></div>`;
     const lista = document.createElement('div');
     lista.className = 'carta-items' + (DOS_COLUMNAS.has(cat) ? ' carta-items--dos' : '');
     items.forEach((it) => lista.appendChild(it));
@@ -245,10 +339,14 @@ function irA(tab, el) {
   const top = panel.getBoundingClientRect().top;
   if (top < 0 || top > innerHeight * 0.6) scrollTo({ top: scrollY + top - (innerWidth < 980 ? 150 : 110), behavior: reduce ? 'auto' : 'smooth' });
 }
-document.addEventListener('kit:carta', (e) => { armarCarta(e.detail.el); });
-// si la carta ya se pintó antes de escuchar el evento
-const kitCarta = $('[data-kit="carta"]');
+document.addEventListener('kit:carta', (e) => {
+  if (e.detail.el.id === 'carta-kit') armarCarta(e.detail.el);
+  if (e.detail.el.id === 'tienda-kit') armarTienda(e.detail.el);
+});
+// si ya se pintaron antes de escuchar el evento
+const kitCarta = $('#carta-kit');
 if (kitCarta && $('.kit-carta__panel', kitCarta) && !$('.carta-cab', kitCarta)) armarCarta(kitCarta);
+if (tiendaKit && $('.kit-carta__panel', tiendaKit)) armarTienda(tiendaKit);
 
 // foto del producto en la caja fija
 let hoverRaf = null, ultimoItem = null;
@@ -273,99 +371,96 @@ kitCarta?.addEventListener('pointerover', (e) => {
   });
 });
 
-/* ---------- El pan del finde ---------- */
-const listaPanes = $('[data-panes]');
-let diaPan = 'viernes';
-$$('input[name="dia-pan"]').forEach((r) => r.addEventListener('change', () => { if (r.checked) diaPan = r.value; }));
-let panIds = new Set();
-async function pintarPanes() {
-  const prods = (await kit.store.getProductos()).filter((p) => p.categoria === 'panes');
-  panIds = new Set(prods.map((p) => p.id));
-  listaPanes.innerHTML = prods.map((p, i) => {
-    const pedible = p.disponible !== false && p.precio != null;
-    return `<li style="--i:${i}"><div><b>${esc(p.nombre)}</b>${p.descripcion ? `<small>${esc(p.descripcion)}</small>` : ''}${p.disponible === false ? '<small>Hoy no hay</small>' : ''}</div>
-      <span class="precio">${kit.money(p.precio) ?? 'Consultar'}</span>${pedible ? `<div data-kit-qty="${esc(p.id)}"></div>` : '<span></span>'}</li>`;
-  }).join('');
-  kit.carrito?.sync(listaPanes);
-}
-pintarPanes();
-kit.store.onChange(pintarPanes);
-
-/* ---------- Día de retiro dentro del checkout del kit ---------- */
-const DIAS = [['hoy', 'Hoy'], ['viernes', 'Viernes'], ['sábado', 'Sábado'], ['domingo', 'Domingo']];
-const RE_DIA = /^Retiro: ([^.]*)\.\s*/;
-function sumarDia(form) {
-  if (!form || form.querySelector('.retiro-dia')) return;
-  const ta = form.querySelector('textarea[name="nota"]');
-  if (!ta) return;
-  const tienePan = (kit.carrito?.lineas || []).some((l) => panIds.has(l.id));
-  const previo = ta.value.match(RE_DIA)?.[1];
-  const actual = DIAS.some(([v]) => v === previo) ? previo : (tienePan ? diaPan : 'hoy');
-  const fs = document.createElement('fieldset');
-  fs.className = 'retiro-dia';
-  fs.innerHTML = `<legend>¿Cuándo lo pasás a buscar?</legend>${DIAS.map(([v, l]) => `<label><input type="radio" name="retiroDia" value="${v}" ${v === actual ? 'checked' : ''}><span>${l}</span></label>`).join('')}`;
-  ta.closest('label').before(fs);
-  const poner = (v) => {
-    ta.value = `Retiro: ${v}. ${ta.value.replace(RE_DIA, '')}`.trim();
-    ta.dispatchEvent(new Event('input', { bubbles: true }));
-  };
-  fs.addEventListener('change', (e) => { if (e.target.name === 'retiroDia') poner(e.target.value); });
-  if (previo !== actual) poner(actual);
-}
-new MutationObserver(() => {
-  const form = $('.kit-cart form.kit-form');
-  if (form && !form.querySelector('.retiro-dia')) sumarDia(form);
-}).observe(document.body, { childList: true, subtree: true });
-
-/* ---------- Armá tu mesa ---------- */
-const MESA_IDS = ['latte', 'doppio', 'cruasan', 'cookie', 'chipa', 'faina'];
+/* =========================================================
+   ARMÁ TU CAJA: 6 piezas del mostrador → "Caja Compadre"
+   ========================================================= */
+const CAJA_ID = 't-caja';
+const LUGARES = 6;
+const PIEZAS = [
+  { id: 'cruasan', nombre: 'Cruasán', img: 'img/platos/cruasan.webp' },
+  { id: 'pepi', nombre: 'Pepi', img: 'img/platos/pepi.webp' },
+  { id: 'cookie', nombre: 'Cookie', img: 'img/platos/cookie.webp' },
+  { id: 'crumble', nombre: 'Crumble', img: 'img/platos/crumble.webp' },
+  { id: 'danesa', nombre: 'Danesa', img: 'img/platos/danesa.webp' },
+  { id: 'badolca', nombre: 'Badolca', img: 'img/platos/badolca.webp' },
+];
 const bandeja = $('[data-bandeja]');
-const mesa = $('[data-mesa]');
-const cuenta = $('[data-mesa-cuenta]');
-let platos = [];
-async function pintarBandeja() {
-  const prods = await kit.store.getProductos();
-  platos = MESA_IDS.map((id) => prods.find((p) => p.id === id)).filter((p) => p && p.foto && p.disponible !== false && p.precio != null);
-  bandeja.innerHTML = platos.map((p, i) => `<li style="--i:${i}"><button type="button" data-plato="${esc(p.id)}" aria-label="Servir ${esc(p.nombre)} en la mesa">
-      <img src="${esc(kit.asset(p.foto))}" alt="" width="96" height="96" draggable="false"><b>${esc(p.nombre)}</b><small>${kit.money(p.precio)}</small></button></li>`).join('');
-}
-pintarBandeja();
-kit.store.onChange(pintarBandeja);
+const cajaMesa = $('[data-caja-mesa]');
+const caja = $('[data-caja]');
+const huecosEl = $('[data-huecos]');
+const cuenta = $('[data-caja-cuenta]');
+const btnSumar = $('[data-caja-sumar]');
+let huecos = Array(LUGARES).fill(null);
+let cerrando = false;
+let prodCaja = null;
 
-function actualizarCuenta() {
-  const n = $$('.servido:not(.sale)', mesa).length;
-  cuenta.textContent = n === 1 ? '1 plato servido' : `${n} platos servidos`;
-  mesa.classList.toggle('servida', n > 0);
+bandeja.innerHTML = PIEZAS.map((p, i) => `<li style="--i:${i}"><button type="button" data-pieza="${p.id}" aria-label="Poner ${esc(p.nombre)} en la caja">
+    <img src="${p.img}" alt="" width="96" height="96" draggable="false"><b>${esc(p.nombre)}</b></button></li>`).join('');
+huecosEl.innerHTML = huecos.map((_, i) => `<li class="hueco" data-hueco="${i}"><span class="hueco__n" aria-hidden="true">${i + 1}</span></li>`).join('');
+
+async function leerCaja() {
+  prodCaja = (await kit.store.getProductos()).find((p) => p.id === CAJA_ID) || null;
+  pintarCaja();
 }
-function servir(id, px, py) {
-  const p = platos.find((x) => x.id === id);
-  if (!p) return;
-  const r = mesa.getBoundingClientRect();
-  const w = Math.max(96, Math.min(170, r.width * 0.2)) * (id === 'doppio' ? 0.62 : 1);
-  const margen = w / 2 + 10;
-  const x = Math.min(r.width - margen, Math.max(margen, px ?? (margen + Math.random() * (r.width - 2 * margen))));
-  const y = Math.min(r.height - 96 - w / 2, Math.max(margen, py ?? (margen + Math.random() * (r.height - 96 - w - 20))));
+function pintarCaja() {
+  const n = huecos.filter(Boolean).length;
+  const llena = n === LUGARES;
+  const hay = !!prodCaja && kit.pedible(prodCaja);
+  cuenta.textContent = n === 0 ? `0 de ${LUGARES} piezas` : llena ? '¡Caja completa!' : `${n} de ${LUGARES} piezas`;
+  caja.classList.toggle('llena', llena);
+  btnSumar.disabled = !llena || !hay || cerrando;
+  btnSumar.innerHTML = !hay ? 'Hoy no hay cajas' : `Sumar<span class="sm-hide"> la caja</span>${prodCaja.precio != null ? ' · ' + kit.money(prodCaja.precio) : ''}`;
+  $$('[data-pieza]', bandeja).forEach((b) => b.setAttribute('aria-disabled', String(llena || cerrando)));
+}
+function poner(id) {
+  if (cerrando) return;
+  const i = huecos.indexOf(null);
+  if (i < 0) { caja.classList.remove('nope'); void caja.offsetWidth; caja.classList.add('nope'); return; }
+  const p = PIEZAS.find((x) => x.id === id); if (!p) return;
+  huecos[i] = id;
+  const li = huecosEl.children[i];
+  li.querySelector('.pieza')?.remove();
   const b = document.createElement('button');
-  b.type = 'button'; b.className = 'servido'; b.dataset.id = id;
-  b.setAttribute('aria-label', `Sacar ${p.nombre} de la mesa`);
-  b.style.cssText = `left:${(x / r.width * 100).toFixed(2)}%;top:${(y / r.height * 100).toFixed(2)}%;--w:${w.toFixed(0)}px;--r:${(Math.random() * 50 - 25).toFixed(0)}deg`;
-  b.innerHTML = `<img src="${esc(kit.asset(p.foto))}" alt="">`;
-  mesa.appendChild(b);
-  kit.carrito.agregar(id, 1);
-  actualizarCuenta();
+  b.type = 'button'; b.className = 'pieza'; b.dataset.i = i;
+  b.style.setProperty('--r', `${(Math.random() * 30 - 15).toFixed(0)}deg`);
+  b.setAttribute('aria-label', `Sacar ${p.nombre} de la caja`);
+  b.innerHTML = `<img src="${p.img}" alt="">`;
+  li.appendChild(b);
+  li.classList.add('lleno');
+  pintarCaja();
 }
-mesa.addEventListener('click', (e) => {
-  const s = e.target.closest('.servido'); if (!s || s.classList.contains('sale')) return;
-  s.classList.add('sale'); kit.carrito.agregar(s.dataset.id, -1);
-  actualizarCuenta(); setTimeout(() => s.remove(), 420);
+huecosEl.addEventListener('click', (e) => {
+  const b = e.target.closest('.pieza'); if (!b || cerrando || b.classList.contains('sale')) return;
+  const i = Number(b.dataset.i);
+  huecos[i] = null; b.classList.add('sale'); b.parentElement.classList.remove('lleno');
+  setTimeout(() => b.remove(), 380);
+  pintarCaja();
 });
-document.addEventListener('kit:pedido', () => setTimeout(() => { $$('.servido', mesa).forEach((s) => s.remove()); actualizarCuenta(); }, 600));
+btnSumar.addEventListener('click', async () => {
+  if (btnSumar.disabled) return;
+  const cuentas = {};
+  huecos.forEach((id) => { const nom = PIEZAS.find((x) => x.id === id).nombre; cuentas[nom] = (cuentas[nom] || 0) + 1; });
+  const nota = Object.entries(cuentas).map(([nom, c]) => c > 1 ? `${nom} ×${c}` : nom).join(', ');
+  cerrando = true; pintarCaja();
+  caja.classList.add('cerrada');
+  await esperar(reduce ? 0 : 900);
+  kit.carrito.agregar(CAJA_ID, 1, { nota, origen: caja });
+  await esperar(reduce ? 0 : 900);
+  huecos = Array(LUGARES).fill(null);
+  $$('.pieza', huecosEl).forEach((b) => b.remove());
+  $$('.hueco', huecosEl).forEach((h) => h.classList.remove('lleno'));
+  caja.classList.remove('cerrada');
+  cerrando = false; pintarCaja();
+});
+leerCaja();
+kit.store.onChange(leerCaja);
 
-// arrastrar desde la bandeja (o tocar para servir)
+// arrastrar desde la bandeja (o tocar para poner)
 let drag = null, ignorarClick = false;
+const dentroDeCaja = (x, y) => { const r = caja.getBoundingClientRect(); return x > r.left && x < r.right && y > r.top && y < r.bottom; };
 bandeja.addEventListener('pointerdown', (e) => {
-  const btn = e.target.closest('[data-plato]'); if (!btn || e.button > 0) return;
-  drag = { btn, id: btn.dataset.plato, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, ghost: null, raf: null, pid: e.pointerId };
+  const btn = e.target.closest('[data-pieza]'); if (!btn || e.button > 0 || cerrando) return;
+  drag = { btn, id: btn.dataset.pieza, x0: e.clientX, y0: e.clientY, x: e.clientX, y: e.clientY, ghost: null, raf: null, pid: e.pointerId };
 });
 addEventListener('pointermove', (e) => {
   if (!drag || e.pointerId !== drag.pid) return;
@@ -381,27 +476,24 @@ addEventListener('pointermove', (e) => {
     if (!drag) return;
     drag.raf = null;
     drag.ghost.style.transform = `translate(${drag.x}px, ${drag.y}px) scale(1.12) rotate(-6deg)`;
-    const r = mesa.getBoundingClientRect();
-    mesa.classList.toggle('encima', drag.x > r.left && drag.x < r.right && drag.y > r.top && drag.y < r.bottom);
+    cajaMesa.classList.toggle('encima', dentroDeCaja(drag.x, drag.y));
   });
 }, { passive: true });
 function soltar(e) {
   if (!drag || (e && e.pointerId !== drag.pid)) return;
   const d = drag; drag = null;
   cancelAnimationFrame(d.raf);
-  mesa.classList.remove('encima');
+  cajaMesa.classList.remove('encima');
   if (!d.ghost) return;
   ignorarClick = true; setTimeout(() => { ignorarClick = false; }, 50);
-  const r = mesa.getBoundingClientRect();
-  const dentro = d.x > r.left && d.x < r.right && d.y > r.top && d.y < r.bottom;
   d.ghost.remove();
-  if (dentro) servir(d.id, d.x - r.left, d.y - r.top);
+  if (dentroDeCaja(d.x, d.y)) poner(d.id);
 }
 addEventListener('pointerup', soltar);
-addEventListener('pointercancel', (e) => { if (drag?.ghost) drag.ghost.remove(); drag = null; mesa.classList.remove('encima'); });
+addEventListener('pointercancel', () => { if (drag?.ghost) drag.ghost.remove(); drag = null; cajaMesa.classList.remove('encima'); });
 bandeja.addEventListener('click', (e) => {
-  const btn = e.target.closest('[data-plato]'); if (!btn || ignorarClick) return;
-  servir(btn.dataset.plato);
+  const btn = e.target.closest('[data-pieza]'); if (!btn || ignorarClick) return;
+  poner(btn.dataset.pieza);
 });
 
 // la tira recalcula su ancho cuando cargan las fotos

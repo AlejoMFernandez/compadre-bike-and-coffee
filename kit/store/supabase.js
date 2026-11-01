@@ -1,3 +1,5 @@
+import { configEstadias } from '../core/estadias.js';
+import { configCanchas, tarifasDe as tarifasCanchas, ocupaDe, deporteDe } from '../core/canchas.js';
 // Adaptador PRODUCCIÓN: Supabase (base de datos + login del dueño + fotos).
 // Se activa con "modo": "produccion" y "supabase": { "url", "anonKey" } en cliente.json.
 // Esquema y permisos: supabase/schema.sql. Las altas públicas (pedidos y reservas) pasan
@@ -14,11 +16,13 @@ const aPedido = (r) => r && ({
   estado: r.estado, creado: r.creado,
 });
 const aReserva = (r) => r && ({ ...r, extras: r.extras || undefined, servicio: r.servicio || undefined });
-const aCategoria = (r) => r && ({ id: r.id, nombre: r.nombre, orden: r.orden, ...(r.temporada !== undefined ? { temporada: r.temporada } : {}), ...(r.especial ? { especial: true, desde: r.desde || '', hasta: r.hasta || '', avisoDias: r.aviso_dias ?? 30, bajada: r.bajada || '' } : {}), ...(r.anticipacion_horas != null ? { anticipacionHoras: r.anticipacion_horas } : {}) });
+const aCategoria = (r) => r && ({ id: r.id, nombre: r.nombre, orden: r.orden, ...(r.temporada !== undefined ? { temporada: r.temporada } : {}), ...(r.especial ? { especial: true, desde: r.desde || '', hasta: r.hasta || '', avisoDias: r.aviso_dias ?? 30, bajada: r.bajada || '' } : {}), ...(r.anticipacion_horas != null ? { anticipacionHoras: r.anticipacion_horas } : {}), ...(r.tienda ? { tienda: true } : {}) });
 // columnas nuevas (kit 1.3) solo si la categoría las usa: así los clientes sin la migración siguen andando
 const extrasCategoria = (c) => ({
   ...(c.especial ? { especial: true, desde: c.desde || null, hasta: c.hasta || null, aviso_dias: Number(c.avisoDias ?? 30), bajada: c.bajada || null } : {}),
-  ...(c.anticipacionHoras != null ? { anticipacion_horas: Number(c.anticipacionHoras) } : {}) });
+  ...(c.anticipacionHoras != null ? { anticipacion_horas: Number(c.anticipacionHoras) } : {}),
+  // tienda online (kit 1.16, supabase/migracion-tienda.sql): solo se manda si la categoría lo define
+  ...(c.tienda !== undefined ? { tienda: !!c.tienda } : {}) });
 const aGiftcard = (r) => {
   if (!r) return null;
   const g = { id: r.id, codigo: r.codigo, pedidoId: r.pedido, pedidoCodigo: r.pedido_codigo, monto: Number(r.monto), saldo: Number(r.saldo), para: r.para || '', de: r.de || '',
@@ -28,10 +32,22 @@ const aGiftcard = (r) => {
 };
 const aProducto = (r) => r && ({
   id: r.id, categoria: r.categoria, nombre: r.nombre, descripcion: r.descripcion || '', precio: r.precio == null ? null : Number(r.precio),
-  foto: r.foto, etiquetas: r.etiquetas || [], disponible: r.disponible, orden: r.orden,
+  foto: r.foto, etiquetas: r.etiquetas || [], disponible: r.disponible, orden: r.orden, ...(r.extra || {}),
 });
+const BASE_PROD = ['negocio', 'id', 'categoria', 'nombre', 'descripcion', 'precio', 'foto', 'etiquetas', 'disponible', 'orden', 'actualizado', 'variantes', 'extra'];
 
 import { temporadaValida, temporadasDe } from '../core/temporadas.js';
+import { mezclarDestacados } from '../core/destacados.js';
+
+const aEstadia = (e) => e && ({ id: e.id, codigo: e.codigo, habitacion: e.habitacion, llegada: e.llegada, salida: e.salida, noches: Math.round((Date.parse(e.salida) - Date.parse(e.llegada)) / 864e5),
+  huespedes: e.huespedes, nombre: e.nombre, telefono: e.telefono, email: e.email, horaLlegada: e.hora_llegada, comentario: e.comentario, total: e.total == null ? null : Number(e.total),
+  sena: e.sena == null ? null : Number(e.sena), origen: e.origen, pago: e.pago, pagoEstado: e.pago_estado, estado: e.estado, creado: e.creado });
+
+const aTurno = (r) => r && ({ id: r.id, codigo: r.codigo, deporte: r.deporte, unidad: r.unidad, canchas: r.canchas, fecha: r.fecha, desde: r.desde, hasta: r.hasta,
+  nombre: r.nombre, telefono: r.telefono || '', email: r.email || '', comentario: r.comentario || '', motivo: r.motivo || '', extras: r.extras || [],
+  precio: r.precio == null ? null : Number(r.precio), total: r.total == null ? null : Number(r.total), sena: r.sena == null ? null : Number(r.sena), pico: r.pico,
+  origen: r.origen, pago: r.pago, pagoEstado: r.pago_estado, estado: r.estado, creado: r.creado });
+const aAbono = (r) => r && ({ id: r.id, deporte: r.deporte, unidad: r.unidad, canchas: r.canchas, dow: r.dow, hora: r.hora, duracion: r.duracion, nombre: r.nombre, telefono: r.telefono || '', desde: r.desde, liberadas: r.liberadas || [], estado: r.estado });
 
 export async function createSupabaseStore(config) {
   const { createClient } = await import(SUPABASE_ESM);
@@ -48,7 +64,10 @@ export async function createSupabaseStore(config) {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'reservas', filter: `negocio=eq.${N}` }, () => subs.forEach(f => f({ origen: 'remoto' })))
       .on('postgres_changes', { event: '*', schema: 'public', table: 'productos', filter: `negocio=eq.${N}` }, () => subs.forEach(f => f({ origen: 'remoto' })))
       .on('postgres_changes', { event: '*', schema: 'public', table: 'negocios', filter: `id=eq.${N}` }, () => subs.forEach(f => f({ origen: 'remoto' })))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'estadias', filter: `negocio=eq.${N}` }, () => subs.forEach(f => f({ origen: 'remoto' })))
       .on('postgres_changes', { event: '*', schema: 'public', table: 'giftcards', filter: `negocio=eq.${N}` }, () => subs.forEach(f => f({ origen: 'remoto' })))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'turnos_cancha', filter: `negocio=eq.${N}` }, () => subs.forEach(f => f({ origen: 'remoto' })))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'abonos_cancha', filter: `negocio=eq.${N}` }, () => subs.forEach(f => f({ origen: 'remoto' })))
       .subscribe();
   }
   const emitir = () => subs.forEach(f => f({ origen: 'local' }));
@@ -68,6 +87,17 @@ export async function createSupabaseStore(config) {
       const r = ok(await sb.from('negocios').select('config').eq('id', N).maybeSingle());
       return temporadaValida(config, r?.config?.temporadaActiva);
     },
+    // destacados (kit 1.11): se guardan en negocios.config → "destacados"
+    async getDestacados() {
+      const r = ok(await sb.from('negocios').select('config').eq('id', N).maybeSingle());
+      return mezclarDestacados(config, r?.config?.destacados || {});
+    },
+    async saveDestacado(id, valores) {
+      const r = ok(await sb.from('negocios').select('config').eq('id', N).single());
+      const destacados = { ...(r.config?.destacados || {}), [id]: { ...valores } };
+      ok(await sb.from('negocios').update({ config: { ...(r.config || {}), destacados } }).eq('id', N));
+      emitir(); return mezclarDestacados(config, destacados)[id];
+    },
     async setTemporada(id) {
       const r = ok(await sb.from('negocios').select('config').eq('id', N).single());
       const activa = temporadaValida(config, id);
@@ -81,6 +111,8 @@ export async function createSupabaseStore(config) {
     async getProductos() { return ok(await sb.from('productos').select('*').eq('negocio', N).order('orden')).map(aProducto); },
     async saveProducto(p) {
       const row = { negocio: N, id: p.id, categoria: p.categoria ?? null, nombre: p.nombre, descripcion: p.descripcion || '', precio: p.precio === '' || p.precio == null ? null : Number(p.precio), foto: p.foto || null, etiquetas: p.etiquetas || [], disponible: p.disponible !== false, orden: p.orden ?? 0, actualizado: new Date().toISOString() };
+      const extra = Object.fromEntries(Object.entries(p).filter(([k]) => !BASE_PROD.includes(k)));
+      if (Object.keys(extra).length) row.extra = extra;   // campos propios (carta.campos): requiere supabase/migracion-campos.sql
       const r = aProducto(ok(await sb.from('productos').upsert(row).select().single())); emitir(); return r;
     },
     async deleteProducto(id) { ok(await sb.from('productos').delete().eq('negocio', N).eq('id', id)); emitir(); },
@@ -100,6 +132,73 @@ export async function createSupabaseStore(config) {
       // servicio y extras solo si se usan (así los clientes sin la migración 1.2 siguen andando)
       if (d.servicio || d.extras?.length) Object.assign(args, { p_servicio: d.servicio || null, p_extras: d.extras || null });
       return aReserva(ok(await sb.rpc('crear_reserva', args)));
+    },
+    // ---- estadías (supabase/migracion-estadias.sql)
+    async getOcupacionEstadias() { return ok(await sb.rpc('ocupacion_estadias', { p_negocio: N })); },
+    async getEstadias() { return ok(await sb.from('estadias').select('*').eq('negocio', N).order('llegada')).map(aEstadia); },
+    async getTarifas() {
+      const E = configEstadias(config);
+      const r = ok(await sb.from('negocios').select('config').eq('id', N).maybeSingle());
+      return { ...E.tarifas, sena: E.sena, minNoches: E.minNoches, ...(r?.config?.tarifasEstadias || {}) };
+    },
+    async saveTarifas(tf) {
+      const r = ok(await sb.from('negocios').select('config').eq('id', N).maybeSingle());
+      ok(await sb.from('negocios').update({ config: { ...(r?.config || {}), tarifasEstadias: tf } }).eq('id', N)); emitir(); return tf;
+    },
+    async createEstadia(data) {
+      if (data.origen && data.origen !== 'web') {     // desde el panel (manual / bloqueo): inserta directo
+        const fila = { negocio: N, habitacion: data.habitacion, llegada: data.llegada, salida: data.salida, huespedes: data.huespedes || 2, nombre: data.nombre || '', telefono: data.telefono || '',
+          comentario: data.comentario || '', origen: data.origen, pago: 'externo', estado: 'confirmada' };
+        try { const r = aEstadia(ok(await sb.from('estadias').insert(fila).select().single())); emitir(); return r; }
+        catch (e) { if (/sin_solape|exclusion/.test(e.message)) e.code = 'sin_lugar'; throw e; }
+      }
+      try { const r = aEstadia(ok(await sb.rpc('crear_estadia', { p_negocio: N, p_data: data }))); emitir(); return r; }
+      catch (e) { if (/sin_lugar/.test(e.message)) e.code = 'sin_lugar'; throw e; }
+    },
+    async updateEstadia(id, patch) {
+      const m = { estado: 'estado', pagoEstado: 'pago_estado', llegada: 'llegada', salida: 'salida', habitacion: 'habitacion', nombre: 'nombre', telefono: 'telefono', comentario: 'comentario' };
+      const fila = {}; Object.entries(patch).forEach(([k, v]) => { if (m[k]) fila[m[k]] = v; });
+      try { const r = aEstadia(ok(await sb.from('estadias').update(fila).eq('negocio', N).eq('id', id).select().single())); emitir(); return r; }
+      catch (e) { if (/sin_solape|exclusion/.test(e.message)) e.code = 'sin_lugar'; throw e; }
+    },
+    async deleteEstadia(id) { ok(await sb.from('estadias').delete().eq('negocio', N).eq('id', id)); emitir(); },
+    async getEstadiaPublica() { return null; },   // en producción el estado del pago lo actualiza el webhook
+    // ---- canchas (supabase/migracion-canchas.sql)
+    async getOcupacionCanchas(desde, hasta) { return (ok(await sb.rpc('ocupacion_canchas', { p_negocio: N, p_desde: desde, p_hasta: hasta })) || []).map(o => ({ fecha: o.fecha, canchas: o.canchas, desde: o.desde, hasta: o.hasta })); },
+    async getTurnosCancha() { return ok(await sb.from('turnos_cancha').select('*').eq('negocio', N).gte('fecha', new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10)).order('fecha').order('desde').limit(2000)).map(aTurno); },
+    async getAbonosCancha() { return ok(await sb.from('abonos_cancha').select('*').eq('negocio', N).order('dow')).map(aAbono); },
+    async getTarifasCancha() { const r = ok(await sb.from('negocios').select('config').eq('id', N).maybeSingle()); return tarifasCanchas(configCanchas(config), r?.config?.tarifasCanchas || {}); },
+    async saveTarifasCancha(tf) {
+      const r = ok(await sb.from('negocios').select('config').eq('id', N).maybeSingle());
+      ok(await sb.from('negocios').update({ config: { ...(r?.config || {}), tarifasCanchas: tf } }).eq('id', N)); emitir(); return tf;
+    },
+    async createTurnoCancha(data) {
+      if (data.origen && data.origen !== 'web') {     // desde el panel (manual / bloqueo): inserta directo (RLS del dueño)
+        const C = configCanchas(config); const d = deporteDe(C, data.deporte);
+        const canchas = data.origen === 'bloqueo' ? data.canchas : ocupaDe(C, data.deporte, data.unidad);
+        const fila = { negocio: N, deporte: data.deporte || null, unidad: data.unidad || null, canchas, fecha: data.fecha, desde: Number(data.desde),
+          hasta: data.origen === 'bloqueo' ? Number(data.hasta) : Number(data.desde) + (d?.duracion || 60), nombre: data.nombre || '', telefono: data.telefono || '', motivo: data.motivo || '',
+          origen: data.origen, pago: 'externo', estado: 'confirmada' };
+        const r = aTurno(ok(await sb.from('turnos_cancha').insert(fila).select().single())); emitir(); return r;
+      }
+      try { const r = aTurno(ok(await sb.rpc('crear_turno_cancha', { p_negocio: N, p_data: data }))); emitir(); return r; }
+      catch (e) { if (/sin_lugar/.test(e.message)) e.code = 'sin_lugar'; throw e; }
+    },
+    async updateTurnoCancha(id, patch) {
+      const m = { estado: 'estado', pagoEstado: 'pago_estado', fecha: 'fecha', desde: 'desde', hasta: 'hasta', canchas: 'canchas', nombre: 'nombre', telefono: 'telefono' };
+      const fila = {}; Object.entries(patch).forEach(([k, v]) => { if (m[k]) fila[m[k]] = v; });
+      if (patch.pagoEstado === 'aprobado') fila.estado = 'confirmada';
+      const r = aTurno(ok(await sb.from('turnos_cancha').update(fila).eq('negocio', N).eq('id', id).select().single())); emitir(); return r;
+    },
+    async deleteTurnoCancha(id) { ok(await sb.from('turnos_cancha').delete().eq('negocio', N).eq('id', id)); emitir(); },
+    async getTurnoCanchaPublico(id) { const r = (ok(await sb.rpc('turno_cancha_publico', { p_id: id })) || [])[0]; return r ? aTurno(r) : null; },
+    async saveAbonoCancha(ab) {
+      const C = configCanchas(config); const d = deporteDe(C, ab.deporte);
+      const fila = { negocio: N }; ['deporte', 'unidad', 'nombre', 'telefono', 'desde', 'liberadas', 'estado'].forEach(k => { if (ab[k] !== undefined) fila[k] = ab[k]; });
+      if (ab.dow != null) fila.dow = Number(ab.dow); if (ab.hora != null) fila.hora = Number(ab.hora);
+      if (d) { fila.canchas = ocupaDe(C, ab.deporte, ab.unidad); fila.duracion = d.duracion; }
+      const q = ab.id ? sb.from('abonos_cancha').update(fila).eq('negocio', N).eq('id', ab.id) : sb.from('abonos_cancha').insert(fila);
+      const r = aAbono(ok(await q.select().single())); emitir(); return r;
     },
     async getReservas() { return ok(await sb.from('reservas').select('*').eq('negocio', N).order('fecha').order('hora')).map(aReserva); },
     async updateReserva(id, patch) { const r = ok(await sb.from('reservas').update({ estado: patch.estado }).eq('id', id).select().single()); emitir(); return r; },

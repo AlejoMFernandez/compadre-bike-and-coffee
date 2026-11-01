@@ -6,6 +6,7 @@
   "pais": "AR",
   "idioma": "es",
   "modo": "demo",
+  "demoVersion": 2,
   "whatsapp": "5491125237915",
   "prefijoPedido": "CMP",
   "supabase": {
@@ -38,22 +39,78 @@
   "modulos": {
     "carta": true,
     "carrito": true,
+    "tienda": true,
     "reservas": false,
     "admin": true
   },
   "horarios": {
-    "lun": []
+    "lun": [],
+    "mar": [
+      [
+        "08:00",
+        "20:00"
+      ]
+    ],
+    "mie": [
+      [
+        "08:00",
+        "20:00"
+      ]
+    ],
+    "jue": [
+      [
+        "08:00",
+        "20:00"
+      ]
+    ],
+    "vie": [
+      [
+        "08:00",
+        "20:00"
+      ]
+    ],
+    "sab": [
+      [
+        "08:00",
+        "20:00"
+      ]
+    ],
+    "dom": [
+      [
+        "08:00",
+        "20:00"
+      ]
+    ]
   },
   "pedidos": {
     "salidas": [
-      "whatsapp",
-      "mercadopago"
+      "mercadopago",
+      "efectivo"
     ],
     "tipos": [
       "retiro"
     ],
     "envio": 0,
-    "minimo": 0
+    "minimo": 0,
+    "sinPrecio": "a_confirmar",
+    "encargo": {
+      "anticipacionHoras": 24,
+      "diasAdelante": 14,
+      "franjas": [
+        {
+          "id": "manana",
+          "nombre": "Mañana",
+          "desde": "09:00",
+          "hasta": "13:00"
+        },
+        {
+          "id": "tarde",
+          "nombre": "Tarde",
+          "desde": "16:00",
+          "hasta": "20:00"
+        }
+      ]
+    }
   },
   "pagos": {
     "mercadopago": {
@@ -92,6 +149,48 @@
         "id": "pizzas",
         "nombre": "Pizzas y fainá",
         "orden": 6
+      },
+      {
+        "id": "t-tortas",
+        "nombre": "Tortas enteras",
+        "orden": 7,
+        "tienda": true
+      },
+      {
+        "id": "t-pasteleria",
+        "nombre": "Pastelería",
+        "orden": 8,
+        "tienda": true
+      },
+      {
+        "id": "t-salado",
+        "nombre": "Salado",
+        "orden": 9,
+        "tienda": true
+      },
+      {
+        "id": "t-panes",
+        "nombre": "Panes",
+        "orden": 10,
+        "tienda": true
+      },
+      {
+        "id": "t-bebidas",
+        "nombre": "Para tomar",
+        "orden": 11,
+        "tienda": true
+      },
+      {
+        "id": "t-navidad",
+        "nombre": "Navidad",
+        "orden": 12,
+        "tienda": true,
+        "especial": true,
+        "desde": "2026-12-01",
+        "hasta": "2026-12-24",
+        "avisoDias": 45,
+        "bajada": "Pan dulce de masa madre, para retirar del 1 al 24 de diciembre",
+        "anticipacionHoras": 48
       }
     ],
     "productos": [
@@ -469,6 +568,247 @@
         "categoria": "pizzas",
         "nombre": "Fainazzeta",
         "precio": 6000
+      },
+      {
+        "id": "t-vasca",
+        "categoria": "t-tortas",
+        "nombre": "Torta vasca entera",
+        "precio": 64000,
+        "descripcion": "La de la vitrina, entera: 8 porciones.",
+        "disponible": true
+      },
+      {
+        "id": "t-carrot",
+        "categoria": "t-tortas",
+        "nombre": "Carrot cake entero",
+        "precio": null,
+        "foto": "img/tienda/carrot.webp",
+        "descripcion": "El del mostrador, entero, para compartir.",
+        "disponible": true
+      },
+      {
+        "id": "t-matilda",
+        "categoria": "t-tortas",
+        "nombre": "Torta Matilda vegana",
+        "precio": null,
+        "foto": "img/tienda/matilda.webp",
+        "descripcion": "Vegana y entera.",
+        "disponible": true
+      },
+      {
+        "id": "t-ricota",
+        "categoria": "t-tortas",
+        "nombre": "Torta de ricota entera",
+        "precio": 60000,
+        "descripcion": "8 porciones.",
+        "disponible": true
+      },
+      {
+        "id": "t-docena-cruasanes",
+        "categoria": "t-pasteleria",
+        "nombre": "Docena de cruasanes",
+        "precio": 33600,
+        "foto": "img/tienda/docena-cruasanes.webp",
+        "descripcion": "Masa madre, palote del abuelo Chalo y laminado en manteca. 12 cruasanes.",
+        "disponible": true
+      },
+      {
+        "id": "t-caja",
+        "categoria": "t-pasteleria",
+        "nombre": "Caja Compadre · 6 piezas",
+        "precio": 24000,
+        "foto": "img/tienda/pepi.webp",
+        "descripcion": "Elegís las 6 piezas del mostrador en «Armá tu caja».",
+        "disponible": true
+      },
+      {
+        "id": "t-cookies",
+        "categoria": "t-pasteleria",
+        "nombre": "Caja de 6 cookies",
+        "precio": 18000,
+        "foto": "img/tienda/cookies.webp",
+        "descripcion": "Chips de choco amargo, maní tostado, azúcar negra y mascabo.",
+        "disponible": true
+      },
+      {
+        "id": "t-medialunas",
+        "categoria": "t-pasteleria",
+        "nombre": "Docena de medialunas",
+        "precio": 30000,
+        "descripcion": "12 medialunas de masa madre.",
+        "disponible": true
+      },
+      {
+        "id": "t-chipa",
+        "categoria": "t-salado",
+        "nombre": "Caja de chipá · 6 porciones",
+        "precio": 18000,
+        "foto": "img/tienda/chipa.webp",
+        "descripcion": "La receta de Facu, cliente y amigo de Compadre.",
+        "disponible": true
+      },
+      {
+        "id": "t-completos",
+        "categoria": "t-salado",
+        "nombre": "6 cruasanes completos",
+        "precio": 45000,
+        "foto": "img/tienda/cruasan-completo.webp",
+        "descripcion": "Jamón y queso o caprese (tomatito, rúcula y muzzarella).",
+        "disponible": true,
+        "opciones": [
+          {
+            "id": "relleno",
+            "nombre": "Relleno",
+            "valores": [
+              {
+                "id": "jamón-y-queso",
+                "nombre": "Jamón y queso"
+              },
+              {
+                "id": "caprese",
+                "nombre": "Caprese"
+              },
+              {
+                "id": "mitad-y-mitad",
+                "nombre": "Mitad y mitad"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "t-cones",
+        "categoria": "t-salado",
+        "nombre": "6 cones de queso",
+        "precio": 24000,
+        "descripcion": "Para la picada o la merienda.",
+        "disponible": true
+      },
+      {
+        "id": "t-bolsa-finde",
+        "categoria": "t-panes",
+        "nombre": "Bolsa del finde",
+        "precio": 14600,
+        "foto": "img/tienda/bolsa-finde.webp",
+        "descripcion": "Campo + molde integral + focaccia. Todo de masa madre.",
+        "disponible": true
+      },
+      {
+        "id": "t-campo",
+        "categoria": "t-panes",
+        "nombre": "Pan de campo",
+        "precio": 4800,
+        "foto": "img/tienda/campo.webp",
+        "descripcion": "Hogaza de masa madre.",
+        "disponible": true
+      },
+      {
+        "id": "t-sarraceno",
+        "categoria": "t-panes",
+        "nombre": "Campo con sarraceno",
+        "precio": 6500,
+        "foto": "img/tienda/sarraceno.webp",
+        "descripcion": "Hogaza de masa madre con trigo sarraceno.",
+        "disponible": true
+      },
+      {
+        "id": "t-molde",
+        "categoria": "t-panes",
+        "nombre": "Molde integral",
+        "precio": 5800,
+        "descripcion": "De masa madre.",
+        "disponible": true
+      },
+      {
+        "id": "t-brioche",
+        "categoria": "t-panes",
+        "nombre": "Brioche",
+        "precio": 8000,
+        "descripcion": "De masa madre.",
+        "disponible": true
+      },
+      {
+        "id": "t-focaccia",
+        "categoria": "t-panes",
+        "nombre": "Focaccia",
+        "precio": 4000,
+        "descripcion": "De masa madre.",
+        "disponible": true
+      },
+      {
+        "id": "t-naranjada",
+        "categoria": "t-bebidas",
+        "nombre": "Naranjada · 1 litro",
+        "precio": null,
+        "foto": "img/tienda/naranjada.webp",
+        "descripcion": "La de la casa, en botella para llevar.",
+        "disponible": true
+      },
+      {
+        "id": "t-limonada",
+        "categoria": "t-bebidas",
+        "nombre": "Limonada · 1 litro",
+        "precio": null,
+        "descripcion": "La de la casa, en botella para llevar.",
+        "disponible": true
+      },
+      {
+        "id": "t-cafe",
+        "categoria": "t-bebidas",
+        "nombre": "Café de especialidad en grano · ¼ kg",
+        "precio": null,
+        "foto": "img/tienda/cafe-grano.webp",
+        "descripcion": "El mismo que servimos en la barra.",
+        "disponible": true,
+        "opciones": [
+          {
+            "id": "molienda",
+            "nombre": "Molienda",
+            "valores": [
+              {
+                "id": "en-grano",
+                "nombre": "En grano"
+              },
+              {
+                "id": "para-filtro",
+                "nombre": "Para filtro"
+              },
+              {
+                "id": "para-espresso",
+                "nombre": "Para espresso"
+              },
+              {
+                "id": "para-moka",
+                "nombre": "Para moka"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "t-pan-dulce",
+        "categoria": "t-navidad",
+        "nombre": "Pan dulce de masa madre",
+        "precio": null,
+        "foto": "img/tienda/pan-dulce.webp",
+        "descripcion": "La grieta de todas las Navidades, resuelta: con o sin frutas.",
+        "disponible": true,
+        "opciones": [
+          {
+            "id": "version",
+            "nombre": "Versión",
+            "valores": [
+              {
+                "id": "con-frutas",
+                "nombre": "Con frutas"
+              },
+              {
+                "id": "sin-frutas",
+                "nombre": "Sin frutas"
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -478,15 +818,14 @@
     "agregar": "Sumar",
     "agregado": "¡Adentro!",
     "carritoVacio": "La canasta está vacía.",
-    "carritoVacioSub": "Arrancá por un cortado o una hogaza para el finde.",
+    "carritoVacioSub": "Arrancá por una torta entera o la bolsa de pan del finde.",
     "retiro": "Retiro por Mosconi 4300",
     "notaPedido": "¿Algo más que tengamos que saber?",
-    "porWhatsappSub": "Lo pagás cuando lo pasás a buscar",
     "porMPSub": "Pagás ahora: tarjeta, débito o dinero en cuenta",
-    "enviarPedido": "Enviar encargo",
+    "enviarPedido": "Encargar",
     "pedidoListo": "¡Listo, compa!",
-    "pedidoListoSub": "Tu código es {codigo}. Compadre lo ve en su panel y te escribe por WhatsApp.",
-    "waPedido": "Hola Compadre! Quiero encargar:",
+    "pedidoListoSub": "Tu código es {codigo}. Compadre lo ve en su panel y te confirma por WhatsApp.",
+    "waPedido": "Hola Compadre! Quiero encargar de la tienda:",
     "waEntrega": "Retiro",
     "seguir": "Seguir mirando"
   }

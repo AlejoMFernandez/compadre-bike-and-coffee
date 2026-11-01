@@ -9,11 +9,12 @@
 //   pedir: false   → vidriera sin botón Agregar (o data-kit-pedir="false" en el contenedor)
 //   filtro(p)      → true para mostrar el producto
 // data-kit-categorias="a,b" en el contenedor: solo esas secciones (ej. carta del mostrador y encargos en la misma página).
+// data-kit-tienda="true" (u opts.tienda): solo las secciones de la tienda online ("tienda": true). Sin eso, la tienda queda afuera (kit 1.16).
 // Opciones distintas por contenedor: initKit({ cartas: { <id del contenedor>: {…} } }).
 import { esc, $$ } from '../core/util.js';
 import { t } from '../core/i18n.js';
 import { tieneVariantes, precioDesde } from '../core/variantes.js';
-import { filtrarCarta } from '../core/temporadas.js';
+import { filtrarCarta, soloCarta, soloTienda } from '../core/temporadas.js';
 
 const ICONOS = {
   picante: '<svg viewBox="0 0 24 24"><path d="M14 6c3 0 6 2 6 6 0 6-8 10-15 10 6-3 7-7 8-11 .4-2 1-5 1-5Z" fill="currentColor"/><path d="M14 6c0-2 1-3 3-4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
@@ -38,6 +39,14 @@ export function mountCarta(el, ctx, opts = {}) {
   }
   ctx.etiquetaHTML = etiquetaHTML;
 
+  // stock del día: "Quedan 4" cuando quedan pocas, "Agotado por hoy" en 0
+  function stockBadge(p) {
+    const q = ctx.stockDe(p); if (q == null) return '';
+    if (q === 0) return `<span class="kit-badge kit-badge--off">${esc(t('agotadoHoy'))}</span>`;
+    return q <= ctx.stockAviso ? `<span class="kit-badge kit-badge--warn">${esc(t('ultimasN', { n: q }))}</span>` : '';
+  }
+  ctx.stockBadge = stockBadge;
+
   function itemHTML(p, i) {
     if (opts.template) return opts.template(p, { ...ctx, index: i, etiquetaHTML });
     const precio = tieneVariantes(p) ? esc(t('desdePrecio', { precio: ctx.money(precioDesde(p)) })) : ctx.money(p.precio) ?? `<span class="kit-price--na">${esc(ctx.pedible(p) ? t('aConfirmar') : t('sinPrecio'))}</span>`;
@@ -50,7 +59,7 @@ export function mountCarta(el, ctx, opts = {}) {
       <div class="kit-item__side">
         <span class="kit-price">${precio}</span>
         ${ctx.carrito && pedir && ctx.pedible(p) ? `<div class="kit-qty" data-kit-qty="${esc(p.id)}"></div>` : ''}
-        ${p.disponible === false ? `<span class="kit-badge kit-badge--off">${esc(t('noDisponible'))}</span>` : ''}
+        ${p.disponible === false ? `<span class="kit-badge kit-badge--off">${esc(t('noDisponible'))}</span>` : stockBadge(p)}
       </div>`;
   }
 
@@ -67,7 +76,7 @@ export function mountCarta(el, ctx, opts = {}) {
         ${grupos.map(g => `<button type="button" role="tab" class="kit-tab${g.id === actual ? ' is-on' : ''}${g.especial ? ' kit-tab--especial' : ''}" id="${uidp}-t-${esc(g.id)}" aria-controls="${uidp}-p-${esc(g.id)}" aria-selected="${g.id === actual}" data-cat="${esc(g.id)}">${esc(g.nombre)}</button>`).join('')}
       </div>` : ''}
       ${grupos.map(g => `<div class="kit-carta__panel" role="tabpanel" id="${uidp}-p-${esc(g.id)}" aria-labelledby="${uidp}-t-${esc(g.id)}" ${g.id === actual ? '' : 'hidden'}>
-        ${g.items.map((p, i) => `<article class="kit-item${p.disponible === false ? ' is-off' : ''}${opts.itemClass ? ' ' + opts.itemClass : ''}" data-id="${esc(p.id)}" data-cat="${esc(g.id)}" ${p.foto ? `data-photo="${esc(ctx.asset(p.foto))}"` : ''} style="--i:${i}">${itemHTML(p, i)}</article>`).join('')}
+        ${g.items.map((p, i) => `<article class="kit-item${p.disponible === false || ctx.agotado(p) ? ' is-off' : ''}${opts.itemClass ? ' ' + opts.itemClass : ''}" data-id="${esc(p.id)}" data-cat="${esc(g.id)}" ${p.foto ? `data-photo="${esc(ctx.asset(p.foto))}"` : ''} style="--i:${i}">${itemHTML(p, i)}</article>`).join('')}
       </div>`).join('')}`;
     el.removeAttribute('aria-busy');
     ctx.carrito?.sync(el);
@@ -92,6 +101,7 @@ export function mountCarta(el, ctx, opts = {}) {
       temporada = tmp; ctx.temporada = tmp;
       ({ cats, prods } = filtrarCarta(c, p, tmp));
       if (soloCats.length) { cats = cats.filter(x => soloCats.includes(x.id)); prods = prods.filter(x => soloCats.includes(x.categoria)); }
+      else ({ cats, prods } = (opts.tienda || el.dataset.kitTienda === 'true') ? soloTienda(cats, prods) : soloCarta(cats, prods));
       if (typeof opts.filtro === 'function') prods = prods.filter(opts.filtro);
       render();
     }
