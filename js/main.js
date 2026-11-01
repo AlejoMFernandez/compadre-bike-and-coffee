@@ -47,7 +47,7 @@ function cargada(img) {
 }
 async function intro() {
   const el = $('.intro');
-  if (!html.classList.contains('con-intro') || !el) { html.classList.add('listo'); el?.remove(); return; }
+  if (!html.classList.contains('con-intro') || !el) { html.classList.add('listo'); el?.remove(); $('.intro-capa')?.remove(); return; }
   const listoRecursos = Promise.race([
     Promise.all([document.fonts ? document.fonts.ready : null, cargada($('.plato--pepi img'))]),
     esperar(2600),
@@ -62,10 +62,14 @@ async function intro() {
   el.classList.add('marca');
   await esperar(420);
   await listoRecursos;
+  // final: el oso se va pedaleando, después sube el telón (negro + capa de color) y entra la web
+  const capa = $('.intro-capa');
   el.classList.add('sale');
-  await esperar(160);
+  await esperar(560);
+  el.classList.add('sube'); capa?.classList.add('sube');
+  await esperar(380);
   html.classList.add('listo');
-  setTimeout(() => { el.remove(); html.classList.remove('con-intro'); }, 1100);
+  setTimeout(() => { el.remove(); capa?.remove(); html.classList.remove('con-intro'); }, 1000);
 }
 intro();
 

@@ -100,10 +100,21 @@ html.con-intro:not(.listo) body { overflow: hidden; }
 .intro__marca span { display: block; font: 100 clamp(40px, 7vw, 84px)/1 var(--f-tit); letter-spacing: .16em; padding-left: .16em; }
 .intro__marca small { display: block; margin-top: 8px; font: 200 clamp(13px, 1.6vw, 18px)/1 var(--f-tit); letter-spacing: .4em; padding-left: .4em; }
 .intro.marca .intro__marca { opacity: 1; transform: none; }
-.intro.sale .intro__oso { transform: translate(90vw, -97%); transition: transform .8s var(--ease-sale); animation: none; }
-.intro.sale { clip-path: inset(0 0 100% 0); transition: clip-path .75s var(--ease-sale) .12s; }
+.intro__marca span, .intro__marca small { transition: opacity .35s, transform .5s var(--ease-sale); }
+/* salida: el oso se va pedaleando, la marca se despide y el telón sube en dos capas */
+.intro.sale .intro__oso { animation: oso-sale .85s cubic-bezier(.55, 0, .8, .35) forwards; --vel: .18s; }
+@keyframes oso-sale { from { transform: translate(0, -97%); } to { transform: translate(115vw, -97%); } }
+.intro.sale .intro__linea { transform-origin: right; animation: linea-sale .6s var(--ease-sale) .1s both; }
+@keyframes linea-sale { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+.intro.sale .intro__marca span { opacity: 0; transform: translateX(70px); }
+.intro.sale .intro__marca small { opacity: 0; transform: translateX(40px); transition-delay: .06s; }
+html.con-intro .intro.sube, html.con-intro .intro-capa.sube { animation: telon 1s cubic-bezier(.76, 0, .24, 1) forwards; }
+html.con-intro .intro-capa.sube { animation-delay: .14s; }
+@keyframes telon { 0% { transform: none; border-radius: 0; } 100% { transform: translateY(-104%); border-radius: 0 0 50% 50% / 0 0 26vh 26vh; } }
+.intro-capa { display: none; }
+html.con-intro .intro-capa { display: block; position: fixed; inset: 0; z-index: 999; background: var(--pop-fg); pointer-events: none; animation: intro-seguro 0s 5.6s forwards; }
 html.listo .intro { pointer-events: none; }
-html:not(.listo) .kit-demo-pill, html:not(.listo) .kit-fab { visibility: hidden; }
+html:not(.listo) .kit-demo-pill, html:not(.listo) .kit-fab, html.con-intro .kit-demo-pill, html.con-intro .kit-fab { visibility: hidden; }
 
 /* =========================================================
    VEREDA: el oso pedalea el scroll (abajo de todo)
